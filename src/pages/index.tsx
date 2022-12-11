@@ -24,12 +24,12 @@ export default function Home() {
 
   const { account, signAndSubmitTransaction } = useWallet();
   const client = new WalletClient(APTOS_NODE_URL, APTOS_FAUCET_URL);
-  const [resource, setResource] = useState<MoveResource>();
-  const [resource_v2, setResourceV2] = useState();
   const [mintTx, setMintTx] = useState('');
   const [stakeTx, setStakeTx] = useState('');
   const [claimTx, setClaimTx] = useState('');
   const [tokens, setTokens] = useState<string[]>([]);
+  const [stakedWolf, setStakedWolf] = useState(0);
+  const [stakedSheep, setStakedSheep] = useState(0);
 
   const [mintInput, updateMintInput] = useState<{
     stake: number;
@@ -93,16 +93,6 @@ export default function Home() {
       console.log(result);
     }
   }
-
-  // async function get_resources() {
-  //   client.aptosClient.getAccountResources(account!.address!.toString()).then(value =>
-  //     console.log(value)
-  //   );
-  // }
-
-  // async function get_table() {
-  //   // client.aptosClient.getTableItem()
-  // }
 
   async function getTokens() {
     const result = await client.getTokens(account!.address!.toString());
@@ -244,7 +234,7 @@ export default function Home() {
         className={
           "btn btn-primary font-bold mt-4 text-white rounded p-4 shadow-lg"
         }>
-        Register Coin
+        Register Wool Coin
       </button>
       <br></br>
       <input
@@ -271,14 +261,14 @@ export default function Home() {
       </button>
       {stakeTx && <a href={`https://explorer.aptoslabs.com/txn/${stakeTx}`}> view transaction </a>}
       <br></br>
-      <button
+      {/* <button
         onClick={getStaked}
         className={
           "btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
         }>
         Get Staked
       </button>
-      <br></br>
+      <br></br> */}
       <input
         placeholder="Enter collection name"
         className="mt-8 p-4 input input-bordered input-primary"
