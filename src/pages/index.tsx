@@ -40,23 +40,15 @@ export default function Home() {
   });
 
   const [stakeInput, updateStakeInput] = useState<{
-    collection: string;
-    name: string;
-    propertyVersion: number;
+    tokenId: number;
   }>({
-    collection: "Woolf Game NFT",
-    name: "",
-    propertyVersion: 1,
+    tokenId: 0,
   });
 
   const [claimInput, updateClaimInput] = useState<{
-    collection: string;
-    name: string;
-    propertyVersion: number;
+    tokenId: number;
   }>({
-    collection: "Woolf Game NFT",
-    name: "",
-    propertyVersion: 1,
+    tokenId: 0,
   });
 
   async function mint_nft() {
@@ -174,29 +166,25 @@ export default function Home() {
   }
 
   function stake() {
-    const { collection, name, propertyVersion } = stakeInput;
+    const { tokenId } = stakeInput;
     return {
       type: "entry_function_payload",
-      function: DAPP_ADDRESS + "::barn::add_many_to_barn_and_pack",
+      function: DAPP_ADDRESS + "::barn::add_many_to_barn_and_pack_with_index",
       type_arguments: [],
       arguments: [
-        collection,
-        name,
-        propertyVersion,
+        tokenId,
       ],
     };
   }
 
   function claim() {
-    const { collection, name, propertyVersion } = claimInput;
+    const { tokenId } = claimInput;
     return {
       type: "entry_function_payload",
-      function: DAPP_ADDRESS + "::barn::claim_many_from_barn_and_pack",
+      function: DAPP_ADDRESS + "::barn::claim_many_from_barn_and_pack_with_index",
       type_arguments: [],
       arguments: [
-        collection,
-        name,
-        propertyVersion,
+        tokenId,
       ],
     };
   }
@@ -260,28 +248,18 @@ export default function Home() {
       </button>
       <br></br>
       <input
-        placeholder="Enter collection name"
+        placeholder="Enter token ID"
         className="mt-4 p-4 input input-bordered input-primary"
-        value={stakeInput.collection}
-        onChange={(e) =>
-          updateStakeInput({ ...stakeInput, collection: e.target.value })
-        }
-      />
-      <input
-        placeholder="Enter token name"
-        className="ml-4 mt-4 p-4 input input-bordered input-primary"
-        value={stakeInput.name}
-        onChange={(e) =>
-          updateStakeInput({ ...stakeInput, name: e.target.value })
-        }
-      />
-      <input
-        placeholder="Enter propertyVersion"
-        className="ml-4 mt-4 p-4 input input-bordered input-primary"
-        value={stakeInput.propertyVersion}
-        onChange={(e) =>
-          updateStakeInput({ ...stakeInput, propertyVersion: parseInt(e.target.value) })
-        }
+        value={stakeInput.tokenId}
+        onChange={(e) => {
+          let targetValue
+          if (e.target.value == '') {
+            targetValue = 0
+          } else {
+            targetValue = parseInt(e.target.value)
+          }
+          updateStakeInput({ ...claimInput, tokenId: targetValue })
+        }}
       />
       <br></br>
       <button
@@ -304,26 +282,16 @@ export default function Home() {
       <input
         placeholder="Enter collection name"
         className="mt-8 p-4 input input-bordered input-primary"
-        value={claimInput.collection}
-        onChange={(e) =>
-          updateClaimInput({ ...claimInput, collection: e.target.value })
-        }
-      />
-      <input
-        placeholder="Enter token name"
-        className="ml-4 mt-8 p-4 input input-bordered input-primary"
-        value={claimInput.name}
-        onChange={(e) =>
-          updateClaimInput({ ...claimInput, name: e.target.value })
-        }
-      />
-      <input
-        placeholder="Enter propertyVersion"
-        className="ml-4 mt-8 p-4 input input-bordered input-primary"
-        value={claimInput.propertyVersion}
-        onChange={(e) =>
-          updateClaimInput({ ...claimInput, propertyVersion: parseInt(e.target.value) })
-        }
+        value={claimInput.tokenId}
+        onChange={(e) => {
+          let targetValue
+          if (e.target.value == '') {
+            targetValue = 0
+          } else {
+            targetValue = parseInt(e.target.value)
+          }
+          updateClaimInput({ ...claimInput, tokenId: targetValue })
+        }}
       />
       <br></br>
       <button
