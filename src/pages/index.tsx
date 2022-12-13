@@ -97,6 +97,7 @@ export default function Home() {
   }
 
   async function register_coin() {
+    check_if_connected()
     const result = await signAndSubmitTransaction(
       register(),
       { gas_unit_price: 100 }
@@ -242,6 +243,12 @@ export default function Home() {
                 <div className="flex flex-row space-x-4">
                   <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
                     <div className="text-center font-console pt-1" onClick={unstake_nft}>Unstake</div>
+                  </div>
+                </div>
+                <div className="h-4"></div>
+                <div className="flex flex-row space-x-4">
+                  <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
+                    <div className="text-center font-console pt-1" onClick={register_coin}>Register Wool Coin</div>
                   </div>
                 </div>
               </div>
