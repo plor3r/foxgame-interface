@@ -5,7 +5,7 @@ import {
 } from "../config/constants";
 import { useWallet } from "@manahippo/aptos-wallet-adapter";
 import { MoveResource } from "@martiandao/aptos-web3-bip44.js/dist/generated";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import {
   AptosAccount,
@@ -30,6 +30,7 @@ export default function Home() {
   const [tokens, setTokens] = useState<string[]>([]);
   const [stakedWolf, setStakedWolf] = useState(0);
   const [stakedSheep, setStakedSheep] = useState(0);
+  const [collectionSupply, setCollectionSupply] = useState(0);
 
   const [mintInput, updateMintInput] = useState<{
     stake: number;
@@ -39,13 +40,22 @@ export default function Home() {
     amount: 1,
   });
 
-
-
   const [tokenInput, updateTokenInput] = useState<{
     tokenId: number;
   }>({
     tokenId: 0,
   });
+
+  async function get_collection_supply() {
+    const result = await signAndSubmitTransaction(
+      collection_supply(),
+      { gas_unit_price: 100 }
+    );
+    if (result) {
+      console.log(result);
+      setMintTx(result.hash);
+    }
+  }
 
   async function mint_nft() {
     const result = await signAndSubmitTransaction(
@@ -113,41 +123,15 @@ export default function Home() {
     console.log(await client.getTokenIds(account!.address!.toString()));
   }
 
-  // async function faas_test() {
-  //   newAxios.post(
-  //     '/api/v1/run?name=DID.Renderer&func_name=get_module_doc',
-  //     {
-  //       "params": [
-  //       ]
-  //     },
-  //   ).then(
-  //     value => {
-  //       console.log(value.data);
-  //     }
-  //   );
-  // }
-  // async function get_did_resource_v2() {
-  //   newAxios.post(
-  //     '/api/v1/run?name=DID.Renderer&func_name=gen_did_document',
-  //     { "params": [account!.address!.toString()] },
-  //   ).then(
-  //     value => {
-  //       console.log(value.data)
-  //       setResourceV2(value.data)
-  //     }
-  //   );
-  // }
-
-  // async function get_did_resource() {
-  //   client.aptosClient.getAccountResource(account!.address!.toString(), DAPP_ADDRESS + "::addr_aggregator::AddrAggregator").then(
-  //     setResource
-  //   );
-  // }
-
-  // function log_acct() {
-  //   console.log(resource)
-  //   console.log(account!.address!.toString());
-  // }
+  function collection_supply() {
+    return {
+      type: "entry_function_payload",
+      function: DAPP_ADDRESS + "::token_helper::collection_supply",
+      type_arguments: [],
+      arguments: [
+      ],
+    };
+  }
 
   function mint(stake: boolean) {
     const { amount } = mintInput;
@@ -195,6 +179,14 @@ export default function Home() {
     };
   }
 
+  useEffect(() => {
+    const fetchData = async () => {
+      await get_collection_supply();
+    }
+
+    fetchData();
+  });
+
   return (
     <div style={{ paddingTop: '1px' }}>
       <div className="mb-5 text-center title">Wolf Game</div>
@@ -206,8 +198,8 @@ export default function Home() {
                 <div className="text-center font-console pt-1 text-red text-2xl">MINTING</div>
                 <div className="h-4"></div>
                 <div className="gen">
-                  <span id="mintedNFT">1380/10000 GEN 0 MINTED</span>
-                  <div className="progress-bar" style={{ width: "50%" }}></div>
+                  <span id="mintedNFT">{collectionSupply}/10000 GEN 0 MINTED</span>
+                  <div className="progress-bar" style={{ width: `${collectionSupply}%` }}></div>
                 </div>
                 <input
                   placeholder="Enter mint amount"

@@ -15,8 +15,7 @@ export function NavBar() {
         </a>
         <ul className="menu menu-horizontal p-0 ml-5">
           <li className="font-sans text-lg">
-            <a href="https://github.com/AlphaWoolfGame/woolf_game" target="_blank">Source Code</a>
-            <a href={MODULE_URL} target="_blank">Contract on Explorer</a>
+            <a href={MODULE_URL} target="_blank">Risky Game</a>
           </li>
         </ul>
       </div>
