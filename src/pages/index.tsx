@@ -53,7 +53,18 @@ export default function Home() {
 
   async function mint_nft() {
     const result = await signAndSubmitTransaction(
-      mint(),
+      mint(false),
+      { gas_unit_price: 100 }
+    );
+    if (result) {
+      console.log(result);
+      setMintTx(result.hash);
+    }
+  }
+
+  async function mint_nft_stake() {
+    const result = await signAndSubmitTransaction(
+      mint(true),
       { gas_unit_price: 100 }
     );
     if (result) {
@@ -142,15 +153,15 @@ export default function Home() {
   //   console.log(account!.address!.toString());
   // }
 
-  function mint() {
-    const { amount, stake } = mintInput;
+  function mint(stake: boolean) {
+    const { amount } = mintInput;
     return {
       type: "entry_function_payload",
       function: DAPP_ADDRESS + "::woolf::mint",
       type_arguments: [],
       arguments: [
         amount,
-        stake ? true : false,
+        stake
       ],
     };
   }
@@ -189,34 +200,35 @@ export default function Home() {
   }
 
   return (
-    <div>
+    <div style={{ paddingTop: '1px' }}>
+      <div className="mb-5 text-center title justify-self-start">Wolf Game</div>
+      <div className="mb-5 text-sm font-console text-red" style={{ maxWidth: "50%" }}>
+        <div className="relative flex justify-center w-full h-full p-1 overflow-hidden md:p-5" style={{ borderImage: "url('/wood-frame.svg') 30 / 1 / 0 stretch", borderWidth: "30px", background: "rgb(237, 227, 209);" }}>
+          <div className="relative w-full h-full z-index:5">
+            <div className="absolute" style={{ width: "120%", height: "120%", top: "-20px", left: "-20px", opacity: "0.04", backgroundImage: "url('./wood-mask.svg')", backgroundRepeat: "repeat", backgroundSize: "400px 268px" }}></div>
+            <div className="flex flex-col items-center">
+              <input
+                placeholder="Enter mint amount"
+                className="relative mt-4 p-4 input input-bordered input-primary"
+                onChange={(e) =>
+                  updateMintInput({ ...mintInput, amount: parseInt(e.target.value) })
+                }
+              />
+              <div className="h-8"></div>
+              <div className="flex flex-row items-center">
+                <div className="relative flex items-center justify-center cursor-pointer false" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
+                  <div className="text-center font-console pt-1" onClick={mint_nft}>Mint</div>
+                </div>
+                <div className="relative flex items-center justify-center cursor-pointer false" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
+                  <div className="text-center font-console pt-1" onClick={mint_nft_stake}>Mint & Stake</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <p><b>Module Path:</b> {DAPP_ADDRESS}::woolf</p>
-      <input
-        placeholder="Enter mint amount"
-        className="mt-8 p-4 input input-bordered input-primary"
-        onChange={(e) =>
-          updateMintInput({ ...mintInput, amount: parseInt(e.target.value) })
-        }
-      />
-      <select
-        value={mintInput.stake}
-        className="ml-4"
-        onChange={(e) => {
-          updateMintInput({ ...mintInput, stake: parseInt(e.target.value) })
-        }}
-      >
-        <option value="0">Not Stake</option>
-        <option value="1">Stake</option>
-      </select>
       <br></br>
-      <br></br>
-      <button
-        onClick={mint_nft}
-        className={
-          "btn btn-primary font-bold text-white rounded p-4 shadow-lg"
-        }>
-        Mint NFT
-      </button>
       {mintTx && <a href={`https://explorer.aptoslabs.com/txn/${mintTx}`}> view transaction </a>}
       <br></br>
       <button
@@ -295,3 +307,4 @@ export default function Home() {
     </div>
   );
 }
+

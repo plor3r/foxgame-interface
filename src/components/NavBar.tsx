@@ -11,7 +11,7 @@ export function NavBar() {
       <div className="flex-1 text-lg font-semibold">
         <a href="#" target="_blank">
           {/* <Image src="/logo.png" width={64} height={64} alt="logo" /> */}
-          <h1>Wolf Game</h1>
+          <div className="title cursor-pointer" style={{fontSize: "24px"}}>Wolf Game</div>
         </a>
         <ul className="menu menu-horizontal p-0 ml-5">
           <li className="font-sans text-lg">

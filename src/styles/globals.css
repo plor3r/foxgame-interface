@@ -10,3 +10,16 @@
     /* background-attachment: fixed; */
     background-size: cover;
 }
+
+.title {
+    font-family: "PIXEL CRAFT";
+    color: transparent;
+    background: linear-gradient(180deg,#b11d18 65%,#862227 65% 100%);
+    background-clip: text;
+    filter: drop-shadow(3px 3px 0 #000000);
+    font-size: 60px;
+}
+
+.font-console {
+    font-family: BrokenConsole-Bold,Helvetica,sans-serif;
+}
