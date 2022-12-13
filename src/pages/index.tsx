@@ -46,24 +46,12 @@ export default function Home() {
     tokenId: 0,
   });
 
-  async function get_collection_supply() {
-    const result = await signAndSubmitTransaction(
-      collection_supply(),
-      { gas_unit_price: 100 }
-    );
-    if (result) {
-      console.log(result);
-      setMintTx(result.hash);
-    }
-  }
-
   async function mint_nft() {
     const result = await signAndSubmitTransaction(
       mint(false),
       { gas_unit_price: 100 }
     );
     if (result) {
-      console.log(result);
       setMintTx(result.hash);
     }
   }
@@ -74,7 +62,6 @@ export default function Home() {
       { gas_unit_price: 100 }
     );
     if (result) {
-      console.log(result);
       setMintTx(result.hash);
     }
   }
@@ -85,7 +72,6 @@ export default function Home() {
       { gas_unit_price: 100 }
     );
     if (result) {
-      console.log(result);
       setStakeTx(result.hash);
     }
   }
@@ -96,7 +82,6 @@ export default function Home() {
       { gas_unit_price: 100 }
     );
     if (result) {
-      console.log(result);
       setClaimTx(result.hash);
     }
   }
@@ -119,18 +104,15 @@ export default function Home() {
     }
   }
 
-  async function getStaked() {
-    console.log(await client.getTokenIds(account!.address!.toString()));
+  async function getCollectionSupply() {
+    const result = await client.getAccountResource(DAPP_ADDRESS, DAPP_ADDRESS + "::token_helper::Data");
+    if (result) {
+      setCollectionSupply(result.data.collection_supply)
+    }
   }
 
-  function collection_supply() {
-    return {
-      type: "entry_function_payload",
-      function: DAPP_ADDRESS + "::token_helper::collection_supply",
-      type_arguments: [],
-      arguments: [
-      ],
-    };
+  async function getStaked() {
+    console.log(await client.getTokenIds(account!.address!.toString()));
   }
 
   function mint(stake: boolean) {
@@ -181,11 +163,10 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      await get_collection_supply();
+      await getCollectionSupply();
     }
-
     fetchData();
-  });
+  }, [mintTx]);
 
   return (
     <div style={{ paddingTop: '1px' }}>
@@ -198,8 +179,8 @@ export default function Home() {
                 <div className="text-center font-console pt-1 text-red text-2xl">MINTING</div>
                 <div className="h-4"></div>
                 <div className="gen">
-                  <span id="mintedNFT">{collectionSupply}/10000 GEN 0 MINTED</span>
-                  <div className="progress-bar" style={{ width: `${collectionSupply}%` }}></div>
+                  <span id="mintedNFT">{collectionSupply}/100 GEN 0 MINTED</span>
+                  <div className="progress-bar" style={{ width: `${collectionSupply/100 * 100}%` }}></div>
                 </div>
                 <input
                   placeholder="Enter mint amount"
