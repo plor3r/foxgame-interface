@@ -14,12 +14,59 @@
 .title {
     font-family: "PIXEL CRAFT";
     color: transparent;
-    background: linear-gradient(180deg,#b11d18 65%,#862227 65% 100%);
+    background: linear-gradient(180deg, #b11d18 65%, #862227 65% 100%);
     background-clip: text;
     filter: drop-shadow(3px 3px 0 #000000);
     font-size: 60px;
 }
 
 .font-console {
-    font-family: BrokenConsole-Bold,Helvetica,sans-serif;
+    font-family: BrokenConsole-Bold, Helvetica, sans-serif;
+}
+
+.input-bar {
+    width: 250px;
+    margin: 20px auto;
+    height: 54px;
+    text-align: center;
+    line-height: 34px;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: block;
+}
+
+
+.gen {
+    width: 100%;
+    margin: 0 auto;
+    height: 48px;
+    text-align: center;
+    border: 8px solid #000000;
+    line-height: 32px;
+    box-sizing: border-box;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.gen span {
+    position: relative;
+    z-index: 99;
+}
+
+.progress-bar {
+    position: absolute;
+    height: 100%;
+    width: 0%;
+    top: 0px;
+    background-color: #B11D18;
+    left: 0px;
+}
+
+.text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+
+.text-red {
+    color: rgba(177,29,24,1);
 }

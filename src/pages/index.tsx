@@ -39,13 +39,9 @@ export default function Home() {
     amount: 1,
   });
 
-  const [stakeInput, updateStakeInput] = useState<{
-    tokenId: number;
-  }>({
-    tokenId: 0,
-  });
 
-  const [claimInput, updateClaimInput] = useState<{
+
+  const [tokenInput, updateTokenInput] = useState<{
     tokenId: number;
   }>({
     tokenId: 0,
@@ -84,9 +80,9 @@ export default function Home() {
     }
   }
 
-  async function claim_nft() {
+  async function unstake_nft() {
     const result = await signAndSubmitTransaction(
-      claim(),
+      unstake(),
       { gas_unit_price: 100 }
     );
     if (result) {
@@ -167,7 +163,7 @@ export default function Home() {
   }
 
   function stake() {
-    const { tokenId } = stakeInput;
+    const { tokenId } = tokenInput;
     return {
       type: "entry_function_payload",
       function: DAPP_ADDRESS + "::barn::add_many_to_barn_and_pack_with_index",
@@ -178,8 +174,8 @@ export default function Home() {
     };
   }
 
-  function claim() {
-    const { tokenId } = claimInput;
+  function unstake() {
+    const { tokenId } = tokenInput;
     return {
       type: "entry_function_payload",
       function: DAPP_ADDRESS + "::barn::claim_many_from_barn_and_pack_with_index",
@@ -201,37 +197,73 @@ export default function Home() {
 
   return (
     <div style={{ paddingTop: '1px' }}>
-      <div className="mb-5 text-center title justify-self-start">Wolf Game</div>
-      <div className="mb-5 text-sm font-console text-red" style={{ maxWidth: "50%" }}>
-        <div className="relative flex justify-center w-full h-full p-1 overflow-hidden md:p-5" style={{ borderImage: "url('/wood-frame.svg') 30 / 1 / 0 stretch", borderWidth: "30px", background: "rgb(237, 227, 209);" }}>
-          <div className="relative w-full h-full z-index:5">
-            <div className="absolute" style={{ width: "120%", height: "120%", top: "-20px", left: "-20px", opacity: "0.04", backgroundImage: "url('./wood-mask.svg')", backgroundRepeat: "repeat", backgroundSize: "400px 268px" }}></div>
-            <div className="flex flex-col items-center">
-              <input
-                placeholder="Enter mint amount"
-                className="relative mt-4 p-4 input input-bordered input-primary"
-                onChange={(e) =>
-                  updateMintInput({ ...mintInput, amount: parseInt(e.target.value) })
-                }
-              />
-              <div className="h-8"></div>
-              <div className="flex flex-row items-center">
-                <div className="relative flex items-center justify-center cursor-pointer false" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
-                  <div className="text-center font-console pt-1" onClick={mint_nft}>Mint</div>
+      <div className="mb-5 text-center title">Wolf Game</div>
+      <div className="flex flex-row items-center space-x-2 justify-center">
+        <div className="mb-5 text-sm font-console basis-1/3 " style={{ maxWidth: "50%" }}>
+          <div className="relative flex justify-center w-full h-full p-1 overflow-hidden md:p-5" style={{ borderImage: "url('/wood-frame.svg') 30 / 1 / 0 stretch", borderWidth: "30px", background: "rgb(237, 227, 209);" }}>
+            <div className="relative w-full h-full z-index:5">
+              <div className="flex flex-col items-center">
+                <div className="text-center font-console pt-1 text-red text-2xl">MINTING</div>
+                <div className="h-4"></div>
+                <div className="gen">
+                  <span id="mintedNFT">1380/10000 GEN 0 MINTED</span>
+                  <div className="progress-bar" style={{ width: "50%" }}></div>
                 </div>
-                <div className="relative flex items-center justify-center cursor-pointer false" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
-                  <div className="text-center font-console pt-1" onClick={mint_nft_stake}>Mint & Stake</div>
+                <input
+                  placeholder="Enter mint amount"
+                  className="relative mt-4 p-4"
+                  style={{ height: "3rem", fontSize: "1rem", userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px", textAlign: "center" }}
+                  onChange={(e) =>
+                    updateMintInput({ ...mintInput, amount: parseInt(e.target.value) })
+                  }
+                />
+                <div className="h-4"></div>
+                <div className="flex flex-row space-x-4">
+                  <div className="relative flex items-center justify-center cursor-pointer false" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
+                    <div className="text-center font-console pt-1" onClick={mint_nft}>Mint</div>
+                  </div>
+                  <div className="relative flex items-center justify-center cursor-pointer false" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
+                    <div className="text-center font-console pt-1" onClick={mint_nft_stake}>Mint & Stake</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="mb-5 text-sm font-console basis-1/3" style={{ maxWidth: "50%" }}>
+          <div className="relative flex justify-center w-full h-full p-1 overflow-hidden md:p-5" style={{ borderImage: "url('/wood-frame.svg') 30 / 1 / 0 stretch", borderWidth: "30px", background: "rgb(237, 227, 209);" }}>
+            <div className="relative w-full h-full z-index:5">
+              <div className="flex flex-col items-center">
+                <div className="text-center font-console pt-1 text-red text-2xl">STAKE & UNSTAKE</div>
+                <div className="h-4"></div>
+                <input
+                  placeholder="Enter Sheep/Wolf ID"
+                  className="relative mt-4 p-4"
+                  style={{ height: "3rem", fontSize: "1rem", userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px", textAlign: "center" }}
+                  onChange={(e) =>
+                    updateTokenInput({ ...tokenInput, tokenId: parseInt(e.target.value) })
+                  }
+                />
+                <div className="h-4"></div>
+                <div className="flex flex-row space-x-4">
+                  <div className="relative flex items-center justify-center cursor-pointer false" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
+                    <div className="text-center font-console pt-1" onClick={stake_nft}>Stake</div>
+                  </div>
+                </div>
+                <div className="h-4"></div>
+                <div className="flex flex-row space-x-4">
+                  <div className="relative flex items-center justify-center cursor-pointer false" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
+                    <div className="text-center font-console pt-1" onClick={unstake_nft}>Unstake</div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <p><b>Module Path:</b> {DAPP_ADDRESS}::woolf</p>
-      <br></br>
-      {mintTx && <a href={`https://explorer.aptoslabs.com/txn/${mintTx}`}> view transaction </a>}
-      <br></br>
-      <button
+
+      {/* {mintTx && <a href={`https://explorer.aptoslabs.com/txn/${mintTx}`}> view transaction </a>} */}
+      {/* <button
         onClick={getTokens}
         className={
           "btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
@@ -248,62 +280,7 @@ export default function Home() {
         }>
         Register Wool Coin
       </button>
-      <br></br>
-      <input
-        placeholder="Enter token ID"
-        className="mt-4 p-4 input input-bordered input-primary"
-        value={stakeInput.tokenId}
-        onChange={(e) => {
-          let targetValue
-          if (e.target.value == '') {
-            targetValue = 0
-          } else {
-            targetValue = parseInt(e.target.value)
-          }
-          updateStakeInput({ ...claimInput, tokenId: targetValue })
-        }}
-      />
-      <br></br>
-      <button
-        onClick={stake_nft}
-        className={
-          "btn btn-primary font-bold mt-4 text-white rounded p-4 shadow-lg"
-        }>
-        Stake
-      </button>
-      {stakeTx && <a href={`https://explorer.aptoslabs.com/txn/${stakeTx}`}> view transaction </a>}
-      <br></br>
-      {/* <button
-        onClick={getStaked}
-        className={
-          "btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
-        }>
-        Get Staked
-      </button>
       <br></br> */}
-      <input
-        placeholder="Enter collection name"
-        className="mt-8 p-4 input input-bordered input-primary"
-        value={claimInput.tokenId}
-        onChange={(e) => {
-          let targetValue
-          if (e.target.value == '') {
-            targetValue = 0
-          } else {
-            targetValue = parseInt(e.target.value)
-          }
-          updateClaimInput({ ...claimInput, tokenId: targetValue })
-        }}
-      />
-      <br></br>
-      <button
-        onClick={claim_nft}
-        className={
-          "btn btn-primary font-bold mt-4 text-white rounded p-4 shadow-lg"
-        }>
-        Claim
-      </button>
-      {claimTx && <a href={`https://explorer.aptoslabs.com/txn/${claimTx}`}> view transaction </a>}
     </div>
   );
 }
