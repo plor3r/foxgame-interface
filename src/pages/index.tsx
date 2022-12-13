@@ -22,7 +22,7 @@ import newAxios from "../utils/axios_utils";
 // import {TypeTagParser} from "@martiandao/aptos-web3-bip44.js/dist/transaction_builder/builder_utils";
 export default function Home() {
 
-  const { account, signAndSubmitTransaction } = useWallet();
+  const { account, signAndSubmitTransaction, connected } = useWallet();
   const client = new WalletClient(APTOS_NODE_URL, APTOS_FAUCET_URL);
   const [mintTx, setMintTx] = useState('');
   const [stakeTx, setStakeTx] = useState('');
@@ -46,7 +46,14 @@ export default function Home() {
     tokenId: 0,
   });
 
+  function check_if_connected() {
+    if (!connected) {
+      alert("Please connect wallet first")
+    }
+  }
+
   async function mint_nft() {
+    check_if_connected()
     const result = await signAndSubmitTransaction(
       mint(false),
       { gas_unit_price: 100 }
@@ -57,6 +64,7 @@ export default function Home() {
   }
 
   async function mint_nft_stake() {
+    check_if_connected()
     const result = await signAndSubmitTransaction(
       mint(true),
       { gas_unit_price: 100 }
@@ -67,6 +75,7 @@ export default function Home() {
   }
 
   async function stake_nft() {
+    check_if_connected()
     const result = await signAndSubmitTransaction(
       stake(),
       { gas_unit_price: 100 }
@@ -77,6 +86,7 @@ export default function Home() {
   }
 
   async function unstake_nft() {
+    check_if_connected()
     const result = await signAndSubmitTransaction(
       unstake(),
       { gas_unit_price: 100 }
@@ -192,10 +202,10 @@ export default function Home() {
                 />
                 <div className="h-4"></div>
                 <div className="flex flex-row space-x-4">
-                  <div className="relative flex items-center justify-center cursor-pointer false" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
+                  <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
                     <div className="text-center font-console pt-1" onClick={mint_nft}>Mint</div>
                   </div>
-                  <div className="relative flex items-center justify-center cursor-pointer false" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
+                  <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
                     <div className="text-center font-console pt-1" onClick={mint_nft_stake}>Mint & Stake</div>
                   </div>
                 </div>
@@ -219,13 +229,13 @@ export default function Home() {
                 />
                 <div className="h-4"></div>
                 <div className="flex flex-row space-x-4">
-                  <div className="relative flex items-center justify-center cursor-pointer false" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
+                  <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
                     <div className="text-center font-console pt-1" onClick={stake_nft}>Stake</div>
                   </div>
                 </div>
                 <div className="h-4"></div>
                 <div className="flex flex-row space-x-4">
-                  <div className="relative flex items-center justify-center cursor-pointer false" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
+                  <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
                     <div className="text-center font-console pt-1" onClick={unstake_nft}>Unstake</div>
                   </div>
                 </div>
