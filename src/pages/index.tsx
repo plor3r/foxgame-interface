@@ -117,6 +117,7 @@ export default function Home() {
   async function getCollectionSupply() {
     const result = await client.getAccountResource(DAPP_ADDRESS, DAPP_ADDRESS + "::token_helper::Data");
     if (result) {
+      console.log(1)
       setCollectionSupply(result.data.collection_supply)
     }
   }
@@ -175,8 +176,12 @@ export default function Home() {
     const fetchData = async () => {
       await getCollectionSupply();
     }
-    fetchData();
-  }, [mintTx]);
+    fetchData()
+    const interval = setInterval(() => {
+      fetchData()
+    }, 10000)
+    return () => clearInterval(interval)
+  }, []);
 
   return (
     <div style={{ paddingTop: '1px' }}>
@@ -190,7 +195,7 @@ export default function Home() {
                 <div className="h-4"></div>
                 <div className="gen">
                   <span id="mintedNFT">{collectionSupply}/100 GEN 0 MINTED</span>
-                  <div className="progress-bar" style={{ width: `${collectionSupply/100 * 100}%` }}></div>
+                  <div className="progress-bar" style={{ width: `${collectionSupply / 100 * 100}%` }}></div>
                 </div>
                 <input
                   placeholder="Enter mint amount"
