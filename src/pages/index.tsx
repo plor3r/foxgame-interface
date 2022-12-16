@@ -31,6 +31,11 @@ export default function Home() {
   const [stakedWolf, setStakedWolf] = useState(0);
   const [stakedSheep, setStakedSheep] = useState(0);
   const [collectionSupply, setCollectionSupply] = useState(0);
+  const [cost, setCost] = useState('');
+
+  const MAX_TOKEN = 100;
+  const PAID_TOKENS = 20;
+  const MINT_PRICE = 1;
 
   const [mintInput, updateMintInput] = useState<{
     stake: number;
@@ -174,6 +179,23 @@ export default function Home() {
   }
 
   useEffect(() => {
+    let { amount } = mintInput;
+    if (Number.isNaN(amount)) {
+      amount = 0
+    }
+    if (collectionSupply < PAID_TOKENS) {
+      setCost(`${(MINT_PRICE * amount).toFixed(3)} APT`)
+    } else if (collectionSupply <= MAX_TOKEN * 2 / 5) {
+      setCost(`${20000 * amount} WOOL`)
+    } else if (collectionSupply <= MAX_TOKEN * 4 / 5) {
+      setCost(`${40000 * amount} WOOL`)
+    } else {
+      setCost(`${80000 * amount} WOOL`)
+    }
+
+  }, [collectionSupply, mintInput]);
+
+  useEffect(() => {
     const fetchData = async () => {
       await getCollectionSupply();
     }
@@ -198,6 +220,7 @@ export default function Home() {
                   <span id="mintedNFT">{collectionSupply}/100 GEN 0 MINTED</span>
                   <div className="progress-bar" style={{ width: `${collectionSupply / 100 * 100}%` }}></div>
                 </div>
+                <div><span className="text-red">Cost: {cost}</span></div>
                 <input
                   placeholder="Enter mint amount"
                   className="relative mt-4 p-4"
