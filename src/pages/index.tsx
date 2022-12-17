@@ -101,6 +101,17 @@ export default function Home() {
     }
   }
 
+  async function claim_wool() {
+    check_if_connected()
+    const result = await signAndSubmitTransaction(
+      claim(),
+      { gas_unit_price: 100 }
+    );
+    if (result) {
+      setClaimTx(result.hash);
+    }
+  }
+
   async function register_coin() {
     check_if_connected()
     const result = await signAndSubmitTransaction(
@@ -165,6 +176,20 @@ export default function Home() {
       type_arguments: [],
       arguments: [
         tokenId,
+        true
+      ],
+    };
+  }
+
+  function claim() {
+    const { tokenId } = tokenInput;
+    return {
+      type: "entry_function_payload",
+      function: DAPP_ADDRESS + "::barn::claim_many_from_barn_and_pack_with_index",
+      type_arguments: [],
+      arguments: [
+        tokenId,
+        false
       ],
     };
   }
@@ -266,6 +291,12 @@ export default function Home() {
                 <div className="flex flex-row space-x-4">
                   <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
                     <div className="text-center font-console pt-1" onClick={unstake_nft}>Unstake</div>
+                  </div>
+                </div>
+                <div className="h-4"></div>
+                <div className="flex flex-row space-x-4">
+                  <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
+                    <div className="text-center font-console pt-1" onClick={claim_wool}>Claim WOOL</div>
                   </div>
                 </div>
                 <div className="h-4"></div>
