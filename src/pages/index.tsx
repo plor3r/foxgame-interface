@@ -235,16 +235,23 @@ export default function Home() {
     <div style={{ paddingTop: '1px' }}>
       <div className="mb-5 text-center title">Wolf Game</div>
       <div className="flex flex-row items-center space-x-2 justify-center">
-        <div className="mb-5 text-sm font-console basis-1/3 " style={{ maxWidth: "50%" }}>
+        <div className="mb-5 text-sm font-console basis-2/5 " style={{ maxWidth: "100%" }}>
           <div className="relative flex justify-center w-full h-full p-1 overflow-hidden md:p-5" style={{ borderImage: "url('/wood-frame.svg') 30 / 1 / 0 stretch", borderWidth: "30px", background: "rgb(237, 227, 209);" }}>
+            <div className="absolute" style={{ width: "120%", height: "120%", top: "-20px", left: "-20px", opacity: "0.04", backgroundImage: "url('/wood-mask.svg')", backgroundRepeat: "repeat", backgroundSize: "400px 268px" }}></div>
             <div className="relative w-full h-full z-index:5">
               <div className="flex flex-col items-center">
                 <div className="text-center font-console pt-1 text-red text-2xl">MINTING</div>
                 <div className="h-4"></div>
                 <div className="gen">
-                  <span id="mintedNFT">{collectionSupply}/100 GEN 0 MINTED</span>
+                  <div className="flex flex-row justify-between w-full">
+                    <span style={{borderRight: "4px solid #000000", width: "20%"}} className="flex-initial">GEN 0</span>
+                    <span style={{borderRight: "4px solid #000000", width: "20%"}} className="flex-initial">20,000 $WOOL</span>
+                    <span style={{borderRight: "4px solid #000000", width: "40%"}} className="flex-initial">40,000 $WOOL</span>
+                    <span className="flex-initial" style={{width: "20%"}}>80,000 $WOOL</span>
+                  </div>
                   <div className="progress-bar" style={{ width: `${collectionSupply / 100 * 100}%` }}></div>
                 </div>
+                <div><span className="text-red">{collectionSupply} MINTED</span></div>
                 <div><span className="text-red">Cost: {cost}</span></div>
                 <input
                   placeholder="Enter mint amount"
@@ -267,12 +274,30 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="mb-5 text-sm font-console basis-1/3" style={{ maxWidth: "50%" }}>
-          <div className="relative flex justify-center w-full h-full p-1 overflow-hidden md:p-5" style={{ borderImage: "url('/wood-frame.svg') 30 / 1 / 0 stretch", borderWidth: "30px", background: "rgb(237, 227, 209);" }}>
+        <div className="mb-5 text-sm font-console basis-2/5" style={{ maxWidth: "50%" }}>
+          <div className="relative flex justify-center w-full h-full p-1 overflow-hidden md:p-5" style={{ borderImage: "url('./wood-frame.svg') 30 / 1 / 0 stretch", borderWidth: "30px", background: "rgb(237, 227, 209);" }}>
+            <div className="absolute" style={{ width: "120%", height: "120%", top: "-20px", left: "-20px", opacity: "0.04", backgroundImage: "url('/wood-mask.svg')", backgroundRepeat: "repeat", backgroundSize: "400px 268px" }}></div>
             <div className="relative w-full h-full z-index:5">
               <div className="flex flex-col items-center">
-                <div className="text-center font-console pt-1 text-red text-2xl">STAKE & UNSTAKE</div>
+                <div className="text-center font-console pt-1 text-xl">$WOOL in your wallet: 0.00 $WOOL</div>
                 <div className="h-4"></div>
+                <div className="text-center font-console pt-1 text-red text-2xl">UNSTAKED</div>
+                <div className="h-4"></div>
+                <div className="w-full" style={{ borderWidth: "0px 0px 4px 4px", borderTopStyle: "initial", borderRightStyle: "initial", borderBottomStyle: "solid", borderLeftStyle: "solid", borderTopColor: "initial", borderRightColor: "initial", borderBottomColor: "rgb(42, 35, 30)", borderLeftColor: "rgb(42, 35, 30)", borderImage: "initial", padding: "2px", opacity: "1" }}>
+                  <div className="text-red font-console">Can Stake</div><div className="text-red font-console text-xs">NO TOKENS</div>
+                </div>
+                <div className="h-4"></div>
+                <div className="text-center font-console pt-1 text-red text-2xl">STAKED</div>
+                <div className="h-4"></div>
+                <div className="w-full" style={{ borderWidth: "0px 0px 4px 4px", borderTopStyle: "initial", borderRightStyle: "initial", borderBottomStyle: "solid", borderLeftStyle: "solid", borderTopColor: "initial", borderRightColor: "initial", borderBottomColor: "rgb(42, 35, 30)", borderLeftColor: "rgb(42, 35, 30)", borderImage: "initial", padding: "2px", opacity: "1" }}>
+                  <div className="text-red font-console">BARN</div><div className="text-red font-console text-xs">NO TOKENS</div>
+                </div>
+                <div className="h-2"></div>
+                <div className="w-full" style={{ borderWidth: "0px 0px 4px 4px", borderTopStyle: "initial", borderRightStyle: "initial", borderBottomStyle: "solid", borderLeftStyle: "solid", borderTopColor: "initial", borderRightColor: "initial", borderBottomColor: "rgb(42, 35, 30)", borderLeftColor: "rgb(42, 35, 30)", borderImage: "initial", padding: "2px", opacity: "1" }}>
+                  <div className="text-red font-console">WOLFPACK</div><div className="text-red font-console text-xs">NO TOKENS</div>
+                </div>
+                <div className="h-4"></div>
+                <div className="text-center font-console pt-1 text-red text-xl">Select tokens to stake, shear or unstake</div>
                 <input
                   placeholder="Enter Sheep/Wolf ID"
                   className="relative mt-4 p-4"
@@ -290,13 +315,10 @@ export default function Home() {
                 <div className="h-4"></div>
                 <div className="flex flex-row space-x-4">
                   <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
-                    <div className="text-center font-console pt-1" onClick={unstake_nft}>Unstake</div>
+                    <div className="text-center font-console pt-1" onClick={claim_wool}>Shear $WOOL</div>
                   </div>
-                </div>
-                <div className="h-4"></div>
-                <div className="flex flex-row space-x-4">
                   <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
-                    <div className="text-center font-console pt-1" onClick={claim_wool}>Claim WOOL</div>
+                    <div className="text-center font-console pt-1" onClick={unstake_nft}>Shear $WOOL and Unstake</div>
                   </div>
                 </div>
                 <div className="h-4"></div>
