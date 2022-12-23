@@ -30,10 +30,10 @@ export default function Home() {
   const [tokens, setTokens] = useState<string[]>([]);
   const [collectionSupply, setCollectionSupply] = useState(0);
   const [cost, setCost] = useState('');
-  const [unstaked, setUnstaked] = useState([1,2,3]);
+  const [unstaked, setUnstaked] = useState<Array<number>>([]);
   const [unstakedSelected, setUnstakedSelected] = useState<Array<number>>([])
-  const [stakedSheep, setStakedSheep] = useState([4,5,6,7]);
-  const [stakedWolf, setStakedWolf] = useState([8,9]);
+  const [stakedSheep, setStakedSheep] = useState<Array<number>>([]);
+  const [stakedWolf, setStakedWolf] = useState<Array<number>>([]);
   const [stakedSelected, setStakedSelected] = useState<Array<number>>([])
   const [woolBalance, setWoolBalance] = useState(0);
 
@@ -128,10 +128,14 @@ export default function Home() {
   }
 
   async function getTokens() {
+    if (!connected) { return }
     const result = await client.getTokens(account!.address!.toString());
     if (result) {
-      console.log(result);
-      setTokens(result.map(e => e.token.name))
+      let wolfNFT = result.filter(t => t.token.collection === "Woolf Game NFT");
+      setUnstaked(wolfNFT.map(e => {
+        let i = e.token.name.indexOf("#")
+        return parseInt(e.token.name.slice(i + 1))
+      }))
     }
   }
 
@@ -250,6 +254,11 @@ export default function Home() {
       await getWoolBalance()
     }
     getWool()
+
+    const getToken = async () => {
+      await getTokens()
+    }
+    getToken()
   }, [connected]);
 
   function addStaked(item: number) {
@@ -276,22 +285,22 @@ export default function Home() {
 
   function renderUnstaked(item: number) {
     const itemIn = unstakedSelected.includes(item);
-    return <div key={item} style={{ marginRight: "5px", marginLeft: "5px", border: itemIn ? "2px solid red" : "2px solid rgb(0,0,0,0)", overflow: 'hidden', display: "inline-block" }}>
-      <Image src="/logo.png" width={32} height={32} alt="{item}" onClick={() => itemIn ? removeUnstaked(item) : addUnstaked(item)} />
+    return <div style={{ marginRight: "5px", marginLeft: "5px", border: itemIn ? "2px solid red" : "2px solid rgb(0,0,0,0)", overflow: 'hidden', display: "inline-block" }}>
+      <Image src="/sheep.svg" width={32} height={32} alt="{item}" onClick={() => itemIn ? removeUnstaked(item) : addUnstaked(item)} />
     </div>
   }
 
   function renderSheep(item: number) {
     const itemIn = stakedSelected.includes(item);
     return <div key={item} style={{ marginRight: "5px", marginLeft: "5px", border: itemIn ? "2px solid red" : "2px solid rgb(0,0,0,0)", overflow: 'hidden', display: "inline-block" }}>
-      <Image src="/logo.png" width={32} height={32} alt="{item}" onClick={() => itemIn ? removeStaked(item) : addStaked(item)} />
+      <Image src="/sheep.svg" width={32} height={32} alt="{item}" onClick={() => itemIn ? removeStaked(item) : addStaked(item)} />
     </div>
   }
 
   function renderWolf(item: number) {
     const itemIn = stakedSelected.includes(item);
     return <div key={item} style={{ marginRight: "5px", marginLeft: "5px", border: itemIn ? "2px solid red" : "2px solid rgb(0,0,0,0)", overflow: 'hidden', display: "inline-block" }}>
-      <Image src="/logo.png" width={32} height={32} alt="{item}" onClick={() => itemIn ? removeStaked(item) : addStaked(item)} />
+      <Image src="/wolf.svg" width={32} height={32} alt="{item}" onClick={() => itemIn ? removeStaked(item) : addStaked(item)} />
     </div>
   }
 
