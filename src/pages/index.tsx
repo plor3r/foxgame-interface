@@ -3,6 +3,7 @@ import {
   APTOS_FAUCET_URL,
   APTOS_NODE_URL
 } from "../config/constants";
+import Image from 'next/image';
 import { useWallet } from "@manahippo/aptos-wallet-adapter";
 import { MoveResource } from "@martiandao/aptos-web3-bip44.js/dist/generated";
 import { useState, useEffect } from "react";
@@ -14,12 +15,11 @@ import {
   AptosClient,
 } from "@martiandao/aptos-web3-bip44.js";
 
-import { CodeBlock } from "../components/CodeBlock";
-
 import newAxios from "../utils/axios_utils";
 
 // import { TypeTagVector } from "@martiandao/aptos-web3-bip44.js/dist/aptos_types";
 // import {TypeTagParser} from "@martiandao/aptos-web3-bip44.js/dist/transaction_builder/builder_utils";
+
 export default function Home() {
 
   const { account, signAndSubmitTransaction, connected } = useWallet();
@@ -28,10 +28,14 @@ export default function Home() {
   const [stakeTx, setStakeTx] = useState('');
   const [claimTx, setClaimTx] = useState('');
   const [tokens, setTokens] = useState<string[]>([]);
-  const [stakedWolf, setStakedWolf] = useState(0);
-  const [stakedSheep, setStakedSheep] = useState(0);
   const [collectionSupply, setCollectionSupply] = useState(0);
   const [cost, setCost] = useState('');
+  const [unstaked, setUnstaked] = useState([1,2,3]);
+  const [unstakedSelected, setUnstakedSelected] = useState<Array<number>>([])
+  const [stakedSheep, setStakedSheep] = useState([4,5,6,7]);
+  const [stakedWolf, setStakedWolf] = useState([8,9]);
+  const [stakedSelected, setStakedSelected] = useState<Array<number>>([])
+  const [woolBalance, setWoolBalance] = useState(0);
 
   const MAX_TOKEN = 100;
   const PAID_TOKENS = 20;
@@ -139,6 +143,16 @@ export default function Home() {
     }
   }
 
+  async function getWoolBalance() {
+    if (!connected) {
+      return;
+    }
+    const result = await client.getCoinBalance(account!.address!.toString(), DAPP_ADDRESS + "::wool::Wool");
+    if (result) {
+      setWoolBalance(result);
+    }
+  }
+
   async function getStaked() {
     console.log(await client.getTokenIds(account!.address!.toString()));
   }
@@ -157,7 +171,7 @@ export default function Home() {
   }
 
   function stake() {
-    const { tokenId } = tokenInput;
+    const tokenId = unstakedSelected[0];
     return {
       type: "entry_function_payload",
       function: DAPP_ADDRESS + "::barn::add_many_to_barn_and_pack_with_index",
@@ -169,7 +183,7 @@ export default function Home() {
   }
 
   function unstake() {
-    const { tokenId } = tokenInput;
+    const tokenId = stakedSelected[0];
     return {
       type: "entry_function_payload",
       function: DAPP_ADDRESS + "::barn::claim_many_from_barn_and_pack_with_index",
@@ -182,7 +196,7 @@ export default function Home() {
   }
 
   function claim() {
-    const { tokenId } = tokenInput;
+    const tokenId = stakedSelected[0];
     return {
       type: "entry_function_payload",
       function: DAPP_ADDRESS + "::barn::claim_many_from_barn_and_pack_with_index",
@@ -231,6 +245,56 @@ export default function Home() {
     return () => clearInterval(interval)
   }, []);
 
+  useEffect(() => {
+    const getWool = async () => {
+      await getWoolBalance()
+    }
+    getWool()
+  }, [connected]);
+
+  function addStaked(item: number) {
+    setUnstakedSelected([])
+    // setUnstakedSelected([...new Set([...unstakedSelected, item])])
+    setStakedSelected([item])
+  }
+
+  function removeStaked(item: number) {
+    setUnstakedSelected([])
+    setStakedSelected(stakedSelected.filter(i => i !== item))
+  }
+
+  function addUnstaked(item: number) {
+    setStakedSelected([])
+    // setUnstakedSelected([...new Set([...unstakedSelected, item])])
+    setUnstakedSelected([item])
+  }
+
+  function removeUnstaked(item: number) {
+    setStakedSelected([])
+    setUnstakedSelected(unstakedSelected.filter(i => i !== item))
+  }
+
+  function renderUnstaked(item: number) {
+    const itemIn = unstakedSelected.includes(item);
+    return <div key={item} style={{ marginRight: "5px", marginLeft: "5px", border: itemIn ? "2px solid red" : "2px solid rgb(0,0,0,0)", overflow: 'hidden', display: "inline-block" }}>
+      <Image src="/logo.png" width={32} height={32} alt="{item}" onClick={() => itemIn ? removeUnstaked(item) : addUnstaked(item)} />
+    </div>
+  }
+
+  function renderSheep(item: number) {
+    const itemIn = stakedSelected.includes(item);
+    return <div key={item} style={{ marginRight: "5px", marginLeft: "5px", border: itemIn ? "2px solid red" : "2px solid rgb(0,0,0,0)", overflow: 'hidden', display: "inline-block" }}>
+      <Image src="/logo.png" width={32} height={32} alt="{item}" onClick={() => itemIn ? removeStaked(item) : addStaked(item)} />
+    </div>
+  }
+
+  function renderWolf(item: number) {
+    const itemIn = stakedSelected.includes(item);
+    return <div key={item} style={{ marginRight: "5px", marginLeft: "5px", border: itemIn ? "2px solid red" : "2px solid rgb(0,0,0,0)", overflow: 'hidden', display: "inline-block" }}>
+      <Image src="/logo.png" width={32} height={32} alt="{item}" onClick={() => itemIn ? removeStaked(item) : addStaked(item)} />
+    </div>
+  }
+
   return (
     <div style={{ paddingTop: '1px' }}>
       <div className="mb-5 text-center title">Wolf Game</div>
@@ -244,10 +308,10 @@ export default function Home() {
                 <div className="h-4"></div>
                 <div className="gen">
                   <div className="flex flex-row justify-between w-full">
-                    <span style={{borderRight: "4px solid #000000", width: "20%"}} className="flex-initial">GEN 0</span>
-                    <span style={{borderRight: "4px solid #000000", width: "20%"}} className="flex-initial">20,000 $WOOL</span>
-                    <span style={{borderRight: "4px solid #000000", width: "40%"}} className="flex-initial">40,000 $WOOL</span>
-                    <span className="flex-initial" style={{width: "20%"}}>80,000 $WOOL</span>
+                    <span style={{ borderRight: "4px solid #000000", width: "20%" }} className="flex-initial">GEN 0</span>
+                    <span style={{ borderRight: "4px solid #000000", width: "20%" }} className="flex-initial">20,000 $WOOL</span>
+                    <span style={{ borderRight: "4px solid #000000", width: "40%" }} className="flex-initial">40,000 $WOOL</span>
+                    <span className="flex-initial" style={{ width: "20%" }}>80,000 $WOOL</span>
                   </div>
                   <div className="progress-bar" style={{ width: `${collectionSupply / 100 * 100}%` }}></div>
                 </div>
@@ -279,54 +343,68 @@ export default function Home() {
             <div className="absolute" style={{ width: "120%", height: "120%", top: "-20px", left: "-20px", opacity: "0.04", backgroundImage: "url('/wood-mask.svg')", backgroundRepeat: "repeat", backgroundSize: "400px 268px" }}></div>
             <div className="relative w-full h-full z-index:5">
               <div className="flex flex-col items-center">
-                <div className="text-center font-console pt-1 text-xl">$WOOL in your wallet: 0.00 $WOOL</div>
+                <div className="text-center font-console pt-1 text-xl">$WOOL in your wallet: {(woolBalance / 100000000).toFixed(2)} $WOOL</div>
                 <div className="h-4"></div>
                 <div className="text-center font-console pt-1 text-red text-2xl">UNSTAKED</div>
                 <div className="h-4"></div>
                 <div className="w-full" style={{ borderWidth: "0px 0px 4px 4px", borderTopStyle: "initial", borderRightStyle: "initial", borderBottomStyle: "solid", borderLeftStyle: "solid", borderTopColor: "initial", borderRightColor: "initial", borderBottomColor: "rgb(42, 35, 30)", borderLeftColor: "rgb(42, 35, 30)", borderImage: "initial", padding: "2px", opacity: "1" }}>
-                  <div className="text-red font-console">Can Stake</div><div className="text-red font-console text-xs">NO TOKENS</div>
+                  {unstaked.length == 0 ? <>
+                    <div className="text-red font-console">Can Stake</div><div className="text-red font-console text-xs">NO TOKENS</div>
+                  </> : <div className="overflow-x-scroll">
+                    {unstaked.map((item, i) => renderUnstaked(item))}
+                  </div>
+                  }
                 </div>
                 <div className="h-4"></div>
                 <div className="text-center font-console pt-1 text-red text-2xl">STAKED</div>
                 <div className="h-4"></div>
                 <div className="w-full" style={{ borderWidth: "0px 0px 4px 4px", borderTopStyle: "initial", borderRightStyle: "initial", borderBottomStyle: "solid", borderLeftStyle: "solid", borderTopColor: "initial", borderRightColor: "initial", borderBottomColor: "rgb(42, 35, 30)", borderLeftColor: "rgb(42, 35, 30)", borderImage: "initial", padding: "2px", opacity: "1" }}>
-                  <div className="text-red font-console">BARN</div><div className="text-red font-console text-xs">NO TOKENS</div>
+                  {stakedSheep.length == 0 ? <>
+                    <div className="text-red font-console">BARN</div><div className="text-red font-console text-xs">NO TOKENS</div>
+                  </> : <div className="overflow-x-scroll">
+                    {stakedSheep.map((item, i) => renderSheep(item))}
+                  </div>
+                  }
                 </div>
                 <div className="h-2"></div>
                 <div className="w-full" style={{ borderWidth: "0px 0px 4px 4px", borderTopStyle: "initial", borderRightStyle: "initial", borderBottomStyle: "solid", borderLeftStyle: "solid", borderTopColor: "initial", borderRightColor: "initial", borderBottomColor: "rgb(42, 35, 30)", borderLeftColor: "rgb(42, 35, 30)", borderImage: "initial", padding: "2px", opacity: "1" }}>
-                  <div className="text-red font-console">WOLFPACK</div><div className="text-red font-console text-xs">NO TOKENS</div>
+                  {stakedWolf.length == 0 ? <>
+                    <div className="text-red font-console">WOLFPACK</div><div className="text-red font-console text-xs">NO TOKENS</div>
+                  </> : <div className="overflow-x-scroll">
+                    {stakedWolf.map((item, i) => renderWolf(item))}
+                  </div>
+                  }
                 </div>
                 <div className="h-4"></div>
-                <div className="text-center font-console pt-1 text-red text-xl">Select tokens to stake, shear or unstake</div>
-                <input
+                <div className="h-4"></div>
+                {unstakedSelected.length == 0 && stakedSelected.length == 0 && <div className="text-center font-console pt-2 pb-2 text-red text-xl">Select tokens to stake, shear or unstake</div>}
+                {/* <input
                   placeholder="Enter Sheep/Wolf ID"
                   className="relative mt-4 p-4"
                   style={{ height: "3rem", fontSize: "1rem", userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px", textAlign: "center" }}
                   onChange={(e) =>
                     updateTokenInput({ ...tokenInput, tokenId: parseInt(e.target.value) })
                   }
-                />
-                <div className="h-4"></div>
-                <div className="flex flex-row space-x-4">
+                /> */}
+                {unstakedSelected.length > 0 && <div className="flex flex-row space-x-4">
                   <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
                     <div className="text-center font-console pt-1" onClick={stake_nft}>Stake</div>
                   </div>
-                </div>
-                <div className="h-4"></div>
-                <div className="flex flex-row space-x-4">
+                </div>}
+                {stakedSelected.length > 0 && <div className="flex flex-row space-x-4">
                   <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
                     <div className="text-center font-console pt-1" onClick={claim_wool}>Shear $WOOL</div>
                   </div>
                   <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
                     <div className="text-center font-console pt-1" onClick={unstake_nft}>Shear $WOOL and Unstake</div>
                   </div>
-                </div>
-                <div className="h-4"></div>
+                </div>}
+                {/* <div className="h-4"></div>
                 <div className="flex flex-row space-x-4">
                   <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
                     <div className="text-center font-console pt-1" onClick={register_coin}>Register Wool Coin</div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
