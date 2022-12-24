@@ -91,6 +91,7 @@ export default function Home() {
     );
     if (result) {
       setStakeTx(result.hash);
+      setUnstakedSelected([])
     }
   }
 
@@ -102,6 +103,7 @@ export default function Home() {
     );
     if (result) {
       setClaimTx(result.hash);
+      setStakedSelected([])
     }
   }
 
@@ -165,9 +167,12 @@ export default function Home() {
       return
     }
     const result = await client.getAccountResource(DAPP_ADDRESS, DAPP_ADDRESS + "::barn::StakedSheep");
+    if (!result) {
+      return
+    }
     const stakedHandle = result.data.items.handle
     newAxios.post(
-      `https://fullnode.devnet.aptoslabs.com/v1/tables/${stakedHandle}/item`,
+      `${APTOS_NODE_URL}tables/${stakedHandle}/item`,
       {
         "key_type": "address",
         "value_type": "vector<u64>",
@@ -175,7 +180,7 @@ export default function Home() {
       },
     ).then(
       value => {
-        setStakedSheep(value.data.map(v => parseInt(v)))
+        setStakedSheep(value.data.map((v: string) => parseInt(v)))
       }
     ).catch();
   }
@@ -185,9 +190,12 @@ export default function Home() {
       return
     }
     const result = await client.getAccountResource(DAPP_ADDRESS, DAPP_ADDRESS + "::barn::StakedWolf");
+    if (!result) {
+      return
+    }
     const stakedHandle = result.data.items.handle
     newAxios.post(
-      `https://fullnode.devnet.aptoslabs.com/v1/tables/${stakedHandle}/item`,
+      `${APTOS_NODE_URL}tables/${stakedHandle}/item`,
       {
         "key_type": "address",
         "value_type": "vector<u64>",
@@ -195,10 +203,10 @@ export default function Home() {
       },
     ).then(
       value => {
-        setStakedWolf(value.data.map(v => parseInt(v)))
+        setStakedWolf(value.data.map((v: string) => parseInt(v)))
       }
     ).catch();
-    
+
   }
 
   function mint(stake: boolean) {
