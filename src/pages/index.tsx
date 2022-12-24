@@ -324,8 +324,7 @@ export default function Home() {
                   </div>
                   <div className="progress-bar" style={{ width: `${collectionSupply / 100 * 100}%` }}></div>
                 </div>
-                <div><span className="text-red">{collectionSupply} MINTED</span></div>
-                <div><span className="text-red">Cost: {cost}</span></div>
+                <div><span className="text-red">{collectionSupply} / {MAX_TOKEN} MINTED</span></div>
                 <input
                   placeholder="Enter mint amount"
                   className="relative mt-4 p-4"
@@ -334,6 +333,8 @@ export default function Home() {
                     updateMintInput({ ...mintInput, amount: parseInt(e.target.value) })
                   }
                 />
+                <div className="h-2"></div>
+                <div><span className="text-red">Cost: {cost}</span></div>
                 <div className="h-4"></div>
                 <div className="flex flex-row space-x-4">
                   <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
