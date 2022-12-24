@@ -323,7 +323,7 @@ export default function Home() {
       await getTokens()
     }
     getToken()
-  }, [connected, mintTx, stakeTx, claimTx, stakedSheep, stakedWolf]);
+  }, [mintTx, stakeTx, claimTx, stakedSheep, stakedWolf]);
 
   function addStaked(item: number) {
     setUnstakedSelected([])
@@ -350,14 +350,20 @@ export default function Home() {
   function renderUnstaked(item: number, type: string) {
     const itemIn = unstakedSelected.includes(item);
     return <div key={item} style={{ marginRight: "5px", marginLeft: "5px", border: itemIn ? "2px solid red" : "2px solid rgb(0,0,0,0)", overflow: 'hidden', display: "inline-block" }}>
-      <Image src={`/${type}.svg`} width={32} height={32} alt="{item}" onClick={() => itemIn ? removeUnstaked(item) : addUnstaked(item)} />
+      <div className="flex flex-col items-center">
+        <div style={{fontSize: "0.75rem"}}>#{item}</div>
+        <Image src={`/${type}.svg`} width={48} height={48} alt="{item}" onClick={() => itemIn ? removeUnstaked(item) : addUnstaked(item)} />
+      </div>
     </div>
   }
 
   function renderStaked(item: number, type: string) {
     const itemIn = stakedSelected.includes(item);
     return <div key={item} style={{ marginRight: "5px", marginLeft: "5px", border: itemIn ? "2px solid red" : "2px solid rgb(0,0,0,0)", overflow: 'hidden', display: "inline-block" }}>
-      <Image src={`/${type}.svg`} width={32} height={32} alt="{item}" onClick={() => itemIn ? removeStaked(item) : addStaked(item)} />
+      <div className="flex flex-col items-center">
+        <div style={{fontSize: "0.75rem"}}>#{item}</div>
+        <Image src={`/${type}.svg`} width={48} height={48} alt={`${item}`} onClick={() => itemIn ? removeStaked(item) : addStaked(item)} />
+      </div>
     </div>
   }
 
