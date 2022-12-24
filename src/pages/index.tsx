@@ -142,7 +142,6 @@ export default function Home() {
   async function getCollectionSupply() {
     const result = await client.getAccountResource(DAPP_ADDRESS, DAPP_ADDRESS + "::token_helper::Data");
     if (result) {
-      console.log(1)
       setCollectionSupply(result.data.collection_supply)
     }
   }
@@ -159,6 +158,47 @@ export default function Home() {
 
   async function getStaked() {
     console.log(await client.getTokenIds(account!.address!.toString()));
+  }
+
+  async function getStakedSheep() {
+    if (!connected) {
+      return
+    }
+    const result = await client.getAccountResource(DAPP_ADDRESS, DAPP_ADDRESS + "::barn::StakedSheep");
+    const stakedHandle = result.data.items.handle
+    newAxios.post(
+      `https://fullnode.devnet.aptoslabs.com/v1/tables/${stakedHandle}/item`,
+      {
+        "key_type": "address",
+        "value_type": "vector<u64>",
+        "key": account!.address!.toString()
+      },
+    ).then(
+      value => {
+        setStakedSheep(value.data.map(v => parseInt(v)))
+      }
+    ).catch();
+  }
+
+  async function getStakedWolf() {
+    if (!connected) {
+      return
+    }
+    const result = await client.getAccountResource(DAPP_ADDRESS, DAPP_ADDRESS + "::barn::StakedWolf");
+    const stakedHandle = result.data.items.handle
+    newAxios.post(
+      `https://fullnode.devnet.aptoslabs.com/v1/tables/${stakedHandle}/item`,
+      {
+        "key_type": "address",
+        "value_type": "vector<u64>",
+        "key": account!.address!.toString()
+      },
+    ).then(
+      value => {
+        setStakedWolf(value.data.map(v => parseInt(v)))
+      }
+    ).catch();
+    
   }
 
   function mint(stake: boolean) {
@@ -259,7 +299,17 @@ export default function Home() {
       await getTokens()
     }
     getToken()
-  }, [connected]);
+
+    const getStakedS = async () => {
+      await getStakedSheep()
+    }
+    getStakedS()
+
+    const getStakedW = async () => {
+      await getStakedWolf()
+    }
+    getStakedW()
+  }, [connected, mintTx, stakeTx, claimTx]);
 
   function addStaked(item: number) {
     setUnstakedSelected([])
@@ -285,7 +335,7 @@ export default function Home() {
 
   function renderUnstaked(item: number) {
     const itemIn = unstakedSelected.includes(item);
-    return <div style={{ marginRight: "5px", marginLeft: "5px", border: itemIn ? "2px solid red" : "2px solid rgb(0,0,0,0)", overflow: 'hidden', display: "inline-block" }}>
+    return <div key={item} style={{ marginRight: "5px", marginLeft: "5px", border: itemIn ? "2px solid red" : "2px solid rgb(0,0,0,0)", overflow: 'hidden', display: "inline-block" }}>
       <Image src="/sheep.svg" width={32} height={32} alt="{item}" onClick={() => itemIn ? removeUnstaked(item) : addUnstaked(item)} />
     </div>
   }
