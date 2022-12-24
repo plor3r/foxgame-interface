@@ -30,7 +30,8 @@ export default function Home() {
   const [tokens, setTokens] = useState<string[]>([]);
   const [collectionSupply, setCollectionSupply] = useState(0);
   const [cost, setCost] = useState('');
-  const [unstaked, setUnstaked] = useState<Array<number>>([]);
+  const [unstakedSheep, setUnstakedSheep] = useState<Array<number>>([]);
+  const [unstakedWolf, setUnstakedWolf] = useState<Array<number>>([]);
   const [unstakedSelected, setUnstakedSelected] = useState<Array<number>>([])
   const [stakedSheep, setStakedSheep] = useState<Array<number>>([]);
   const [stakedWolf, setStakedWolf] = useState<Array<number>>([]);
@@ -133,8 +134,15 @@ export default function Home() {
     if (!connected) { return }
     const result = await client.getTokens(account!.address!.toString());
     if (result) {
-      let wolfNFT = result.filter(t => t.token.collection === "Woolf Game NFT");
-      setUnstaked(wolfNFT.map(e => {
+      console.log(result)
+      let allNFT = result.filter(t => t.token.collection === "Woolf Game NFT");
+      let sheep = allNFT.filter(t => t.token.name.startsWith("Sheep"))
+      let wolf = allNFT.filter(t => t.token.name.startsWith("Wolf"))
+      setUnstakedSheep(sheep.map(e => {
+        let i = e.token.name.indexOf("#")
+        return parseInt(e.token.name.slice(i + 1))
+      }))
+      setUnstakedWolf(wolf.map(e => {
         let i = e.token.name.indexOf("#")
         return parseInt(e.token.name.slice(i + 1))
       }))
@@ -156,10 +164,6 @@ export default function Home() {
     if (result) {
       setWoolBalance(result);
     }
-  }
-
-  async function getStaked() {
-    console.log(await client.getTokenIds(account!.address!.toString()));
   }
 
   async function getStakedSheep() {
@@ -341,24 +345,17 @@ export default function Home() {
     setUnstakedSelected(unstakedSelected.filter(i => i !== item))
   }
 
-  function renderUnstaked(item: number) {
+  function renderUnstaked(item: number, type: string) {
     const itemIn = unstakedSelected.includes(item);
     return <div key={item} style={{ marginRight: "5px", marginLeft: "5px", border: itemIn ? "2px solid red" : "2px solid rgb(0,0,0,0)", overflow: 'hidden', display: "inline-block" }}>
-      <Image src="/sheep.svg" width={32} height={32} alt="{item}" onClick={() => itemIn ? removeUnstaked(item) : addUnstaked(item)} />
+      <Image src={`/${type}.svg`} width={32} height={32} alt="{item}" onClick={() => itemIn ? removeUnstaked(item) : addUnstaked(item)} />
     </div>
   }
 
-  function renderSheep(item: number) {
+  function renderStaked(item: number, type: string) {
     const itemIn = stakedSelected.includes(item);
     return <div key={item} style={{ marginRight: "5px", marginLeft: "5px", border: itemIn ? "2px solid red" : "2px solid rgb(0,0,0,0)", overflow: 'hidden', display: "inline-block" }}>
-      <Image src="/sheep.svg" width={32} height={32} alt="{item}" onClick={() => itemIn ? removeStaked(item) : addStaked(item)} />
-    </div>
-  }
-
-  function renderWolf(item: number) {
-    const itemIn = stakedSelected.includes(item);
-    return <div key={item} style={{ marginRight: "5px", marginLeft: "5px", border: itemIn ? "2px solid red" : "2px solid rgb(0,0,0,0)", overflow: 'hidden', display: "inline-block" }}>
-      <Image src="/wolf.svg" width={32} height={32} alt="{item}" onClick={() => itemIn ? removeStaked(item) : addStaked(item)} />
+      <Image src={`/${type}.svg`} width={32} height={32} alt="{item}" onClick={() => itemIn ? removeStaked(item) : addStaked(item)} />
     </div>
   }
 
@@ -416,10 +413,11 @@ export default function Home() {
                 <div className="text-center font-console pt-1 text-red text-2xl">UNSTAKED</div>
                 <div className="h-4"></div>
                 <div className="w-full" style={{ borderWidth: "0px 0px 4px 4px", borderTopStyle: "initial", borderRightStyle: "initial", borderBottomStyle: "solid", borderLeftStyle: "solid", borderTopColor: "initial", borderRightColor: "initial", borderBottomColor: "rgb(42, 35, 30)", borderLeftColor: "rgb(42, 35, 30)", borderImage: "initial", padding: "2px", opacity: "1" }}>
-                  {unstaked.length == 0 ? <>
+                  {unstakedSheep.length == 0 && unstakedWolf.length == 0 ? <>
                     <div className="text-red font-console">Can Stake</div><div className="text-red font-console text-xs">NO TOKENS</div>
                   </> : <div className="overflow-x-scroll">
-                    {unstaked.map((item, i) => renderUnstaked(item))}
+                    {unstakedSheep.map((item, i) => renderUnstaked(item, "sheep"))}
+                    {unstakedWolf.map((item, i) => renderUnstaked(item, "wolf"))}
                   </div>
                   }
                 </div>
@@ -430,7 +428,7 @@ export default function Home() {
                   {stakedSheep.length == 0 ? <>
                     <div className="text-red font-console">BARN</div><div className="text-red font-console text-xs">NO TOKENS</div>
                   </> : <div className="overflow-x-scroll">
-                    {stakedSheep.map((item, i) => renderSheep(item))}
+                    {stakedSheep.map((item, i) => renderStaked(item, "sheep"))}
                   </div>
                   }
                 </div>
@@ -439,7 +437,7 @@ export default function Home() {
                   {stakedWolf.length == 0 ? <>
                     <div className="text-red font-console">WOLFPACK</div><div className="text-red font-console text-xs">NO TOKENS</div>
                   </> : <div className="overflow-x-scroll">
-                    {stakedWolf.map((item, i) => renderWolf(item))}
+                    {stakedWolf.map((item, i) => renderStaked(item, "wolf"))}
                   </div>
                   }
                 </div>
