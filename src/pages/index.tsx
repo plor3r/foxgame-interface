@@ -134,18 +134,17 @@ export default function Home() {
     if (!connected) { return }
     const result = await client.getTokens(account!.address!.toString());
     if (result) {
-      console.log(result)
       let allNFT = result.filter(t => t.token.collection === "Woolf Game NFT");
       let sheep = allNFT.filter(t => t.token.name.startsWith("Sheep"))
       let wolf = allNFT.filter(t => t.token.name.startsWith("Wolf"))
       setUnstakedSheep(sheep.map(e => {
         let i = e.token.name.indexOf("#")
         return parseInt(e.token.name.slice(i + 1))
-      }))
+      }).filter(t => !stakedSheep.includes(t)))
       setUnstakedWolf(wolf.map(e => {
         let i = e.token.name.indexOf("#")
         return parseInt(e.token.name.slice(i + 1))
-      }))
+      }).filter(t => !stakedWolf.includes(t)))
     }
   }
 
@@ -307,11 +306,6 @@ export default function Home() {
     }
     getWool()
 
-    const getToken = async () => {
-      await getTokens()
-    }
-    getToken()
-
     const getStakedS = async () => {
       await getStakedSheep()
     }
@@ -321,7 +315,15 @@ export default function Home() {
       await getStakedWolf()
     }
     getStakedW()
+
   }, [connected, mintTx, stakeTx, claimTx]);
+
+  useEffect(() => {
+    const getToken = async () => {
+      await getTokens()
+    }
+    getToken()
+  }, [connected, mintTx, stakeTx, claimTx, stakedSheep, stakedWolf]);
 
   function addStaked(item: number) {
     setUnstakedSelected([])
