@@ -369,8 +369,9 @@ export default function Home() {
                   </div>
                   <div className="progress-bar" style={{ width: `${collectionSupply / MAX_TOKEN * 100}%` }}></div>
                 </div>
-                <div><span className="text-red text-xl">{collectionSupply} / {MAX_TOKEN} MINTED</span></div>
                 <div className="h-2"></div>
+                <div><span className="text-red text-xl">{collectionSupply} / {MAX_TOKEN} MINTED</span></div>
+                <div className="h-4"></div>
                 <div>
                   <span className="text-black text-xl">AMOUNT </span>
                   <i className="text-red arrow down cursor-pointer ml-2 mr-2" onClick={() => setMintAmount(Math.max(1, mintAmount - 1))}></i>
