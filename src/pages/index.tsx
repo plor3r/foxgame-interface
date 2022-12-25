@@ -1,14 +1,7 @@
-import {
-  DAPP_ADDRESS,
-  APTOS_FAUCET_URL,
-  APTOS_NODE_URL
-} from "../config/constants";
 import Image from 'next/image';
-import { useState, useEffect } from "react";
 import React from "react";
 
 export default function Home() {
-
   return (
     <div style={{ paddingTop: '1px' }}>
       <div className="flex flex-col items-center w-full font-console p-5">
@@ -26,9 +19,9 @@ export default function Home() {
                     <a href="/game" className="text-center text-white w-full text-center">play</a>
                   </div>
                 </div>
-                {/* <div className="relative flex items-center justify-center cursor-pointer false" style={{ userSelect: "none", width: "200px", height: "40px", backgroundColor: "rgb(131, 75, 27)", color: "white", borderWidth: "4px", borderColor: "rgb(99, 54, 33)" }}>
-                  <div className="text-center font-console pt-1">Woolpaper</div>
-                </div> */}
+                <div className="relative flex items-center justify-center cursor-pointer false mt-4" style={{ userSelect: "none", width: "200px", height: "40px", backgroundColor: "rgb(131, 75, 27)", color: "white", borderWidth: "4px", borderColor: "rgb(99, 54, 33)" }}>
+                  <div className="text-center font-console pt-1">Whitepapers</div>
+                </div>
               </div>
             </div>
           </div>
@@ -37,4 +30,3 @@ export default function Home() {
     </div>
   );
 }
-

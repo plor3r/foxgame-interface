@@ -11,7 +11,6 @@ export function NavBar() {
     <nav className="navbar py-4 px-4">
       <div className="flex-1 text-lg font-semibold">
         <Link href="/">
-          {/* <Image src="/logo.png" width={64} height={64} alt="logo" /> */}
           <div className="title cursor-pointer" style={{ fontSize: "24px" }}>Wolf Game</div>
         </Link>
         <ul className="menu menu-horizontal p-0 ml-5">
@@ -19,7 +18,10 @@ export function NavBar() {
             <Link href='/game'>Play</Link>
           </li>
           <li className="font-sans text-lg">
-            <Link href={MODULE_URL} target="_blank">Risky Game</Link>
+            <Link href="/riskygame" target="_blank">Risky Game</Link>
+          </li>
+          <li className="font-sans text-lg">
+            <Link href="/whitepapers" target="_blank">Whitepapers</Link>
           </li>
         </ul>
       </div>

@@ -100,3 +100,17 @@
 .max-w-screen-lg {
     max-width: 1024px;
 }
+
+table {
+    width: 100%;
+    text-align: left;
+    border: 3px solid #24d336;
+    border-collapse: collapse;
+    text-indent: 0;
+    border-color: inherit;
+}
+
+.border-red {
+    --tw-border-opacity: 1;
+    border-color: rgba(177,29,24,var(--tw-border-opacity));
+}
