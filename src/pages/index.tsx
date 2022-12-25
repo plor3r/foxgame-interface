@@ -20,7 +20,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="relative flex items-center justify-center cursor-pointer false mt-4" style={{ userSelect: "none", width: "200px", height: "40px", backgroundColor: "rgb(131, 75, 27)", color: "white", borderWidth: "4px", borderColor: "rgb(99, 54, 33)" }}>
-                  <div className="text-center font-console pt-1">Whitepapers</div>
+                  <a href="/whitepapers" className="text-center font-console pt-1">Whitepapers</a>
                 </div>
               </div>
             </div>
