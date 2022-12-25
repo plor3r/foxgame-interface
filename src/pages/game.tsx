@@ -38,9 +38,9 @@ export default function Home() {
   const [woolBalance, setWoolBalance] = useState(0);
   const [mintAmount, setMintAmount] = useState(1);
 
-  const MAX_TOKEN = 50000;
-  const PAID_TOKENS = 10000;
-  const MINT_PRICE = 6.942;
+  const MAX_TOKEN = 100;
+  const PAID_TOKENS = 20;
+  const MINT_PRICE = 1;
 
   function check_if_connected() {
     if (!connected) {
