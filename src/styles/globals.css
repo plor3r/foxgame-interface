@@ -96,3 +96,7 @@
     transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
 }
+
+.max-w-screen-lg {
+    max-width: 1024px;
+}
