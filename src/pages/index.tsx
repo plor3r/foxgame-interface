@@ -27,7 +27,6 @@ export default function Home() {
   const [mintTx, setMintTx] = useState('');
   const [stakeTx, setStakeTx] = useState('');
   const [claimTx, setClaimTx] = useState('');
-  const [tokens, setTokens] = useState<string[]>([]);
   const [collectionSupply, setCollectionSupply] = useState(0);
   const [cost, setCost] = useState('');
   const [unstakedSheep, setUnstakedSheep] = useState<Array<number>>([]);
@@ -37,24 +36,12 @@ export default function Home() {
   const [stakedWolf, setStakedWolf] = useState<Array<number>>([]);
   const [stakedSelected, setStakedSelected] = useState<Array<number>>([])
   const [woolBalance, setWoolBalance] = useState(0);
+  const [mintAmount, setMintAmount] = useState(1);
 
   const MAX_TOKEN = 100;
   const PAID_TOKENS = 20;
   const MINT_PRICE = 1;
 
-  const [mintInput, updateMintInput] = useState<{
-    stake: number;
-    amount: number;
-  }>({
-    stake: 0,
-    amount: 1,
-  });
-
-  const [tokenInput, updateTokenInput] = useState<{
-    tokenId: number;
-  }>({
-    tokenId: 0,
-  });
 
   function check_if_connected() {
     if (!connected) {
@@ -213,13 +200,12 @@ export default function Home() {
   }
 
   function mint(stake: boolean) {
-    const { amount } = mintInput;
     return {
       type: "entry_function_payload",
       function: DAPP_ADDRESS + "::woolf::mint",
       type_arguments: [],
       arguments: [
-        amount,
+        mintAmount,
         stake
       ],
     };
@@ -273,10 +259,7 @@ export default function Home() {
   }
 
   useEffect(() => {
-    let { amount } = mintInput;
-    if (Number.isNaN(amount)) {
-      amount = 0
-    }
+    let amount = mintAmount;
     if (collectionSupply < PAID_TOKENS) {
       setCost(`${(MINT_PRICE * amount).toFixed(3)} APT`)
     } else if (collectionSupply <= MAX_TOKEN * 2 / 5) {
@@ -286,8 +269,7 @@ export default function Home() {
     } else {
       setCost(`${80000 * amount} WOOL`)
     }
-
-  }, [collectionSupply, mintInput]);
+  }, [collectionSupply, mintAmount]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -351,7 +333,7 @@ export default function Home() {
     const itemIn = unstakedSelected.includes(item);
     return <div key={item} style={{ marginRight: "5px", marginLeft: "5px", border: itemIn ? "2px solid red" : "2px solid rgb(0,0,0,0)", overflow: 'hidden', display: "inline-block" }}>
       <div className="flex flex-col items-center">
-        <div style={{fontSize: "0.75rem"}}>#{item}</div>
+        <div style={{ fontSize: "0.75rem" }}>#{item}</div>
         <Image src={`/${type}.svg`} width={48} height={48} alt="{item}" onClick={() => itemIn ? removeUnstaked(item) : addUnstaked(item)} />
       </div>
     </div>
@@ -361,7 +343,7 @@ export default function Home() {
     const itemIn = stakedSelected.includes(item);
     return <div key={item} style={{ marginRight: "5px", marginLeft: "5px", border: itemIn ? "2px solid red" : "2px solid rgb(0,0,0,0)", overflow: 'hidden', display: "inline-block" }}>
       <div className="flex flex-col items-center">
-        <div style={{fontSize: "0.75rem"}}>#{item}</div>
+        <div style={{ fontSize: "0.75rem" }}>#{item}</div>
         <Image src={`/${type}.svg`} width={48} height={48} alt={`${item}`} onClick={() => itemIn ? removeStaked(item) : addStaked(item)} />
       </div>
     </div>
@@ -379,25 +361,24 @@ export default function Home() {
                 <div className="text-center font-console pt-1 text-red text-2xl">MINTING</div>
                 <div className="h-4"></div>
                 <div className="gen">
-                  <div className="flex flex-row justify-between w-full">
+                  <div className="flex flex-row justify-between w-full" style={{ maxHeight: "36px" }}>
                     <span style={{ borderRight: "4px solid #000000", width: "20%" }} className="flex-initial">GEN 0</span>
                     <span style={{ borderRight: "4px solid #000000", width: "20%" }} className="flex-initial">20,000 $WOOL</span>
                     <span style={{ borderRight: "4px solid #000000", width: "40%" }} className="flex-initial">40,000 $WOOL</span>
                     <span className="flex-initial" style={{ width: "20%" }}>80,000 $WOOL</span>
                   </div>
-                  <div className="progress-bar" style={{ width: `${collectionSupply / 100 * 100}%` }}></div>
+                  <div className="progress-bar" style={{ width: `${collectionSupply / MAX_TOKEN * 100}%` }}></div>
                 </div>
-                <div><span className="text-red">{collectionSupply} / {MAX_TOKEN} MINTED</span></div>
-                <input
-                  placeholder="Enter mint amount"
-                  className="relative mt-4 p-4"
-                  style={{ height: "3rem", fontSize: "1rem", userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px", textAlign: "center" }}
-                  onChange={(e) =>
-                    updateMintInput({ ...mintInput, amount: parseInt(e.target.value) })
-                  }
-                />
+                <div><span className="text-red text-xl">{collectionSupply} / {MAX_TOKEN} MINTED</span></div>
                 <div className="h-2"></div>
-                <div><span className="text-red">Cost: {cost}</span></div>
+                <div>
+                  <span className="text-black text-xl">AMOUNT </span>
+                  <i className="text-red arrow down cursor-pointer ml-2 mr-2" onClick={() => setMintAmount(Math.max(1, mintAmount - 1))}></i>
+                  <span className="text-red text-2xl">{mintAmount}</span>
+                  <i className="text-red arrow up cursor-pointer ml-2" onClick={() => setMintAmount(Math.min(10, mintAmount + 1))}></i>
+                </div>
+                <div className="h-2"></div>
+                <div><span className="text-black text-xl">COST: </span><span className="text-red text-xl">{cost}</span></div>
                 <div className="h-4"></div>
                 <div className="flex flex-row space-x-4">
                   <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
@@ -452,14 +433,6 @@ export default function Home() {
                 <div className="h-4"></div>
                 <div className="h-4"></div>
                 {unstakedSelected.length == 0 && stakedSelected.length == 0 && <div className="text-center font-console pt-2 pb-2 text-red text-xl">Select tokens to stake, shear or unstake</div>}
-                {/* <input
-                  placeholder="Enter Sheep/Wolf ID"
-                  className="relative mt-4 p-4"
-                  style={{ height: "3rem", fontSize: "1rem", userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px", textAlign: "center" }}
-                  onChange={(e) =>
-                    updateTokenInput({ ...tokenInput, tokenId: parseInt(e.target.value) })
-                  }
-                /> */}
                 {unstakedSelected.length > 0 && <div className="flex flex-row space-x-4">
                   <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
                     <div className="text-center font-console pt-1" onClick={stake_nft}>Stake</div>
@@ -484,26 +457,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-      {/* {mintTx && <a href={`https://explorer.aptoslabs.com/txn/${mintTx}`}> view transaction </a>} */}
-      {/* <button
-        onClick={getTokens}
-        className={
-          "btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
-        }>
-        Get Tokens
-      </button>
-      <br></br>
-      <ol className="mt-4">{tokens && tokens.map(e => <p key={e}>{e}</p>)}</ol>
-      <br></br>
-      <button
-        onClick={register_coin}
-        className={
-          "btn btn-primary font-bold mt-4 text-white rounded p-4 shadow-lg"
-        }>
-        Register Wool Coin
-      </button>
-      <br></br> */}
     </div>
   );
 }
