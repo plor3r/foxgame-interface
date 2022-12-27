@@ -402,6 +402,7 @@ export default function Home() {
                 <div className="text-center font-console pt-1 text-red text-2xl">UNSTAKED</div>
                 <div className="h-4"></div>
                 <div className="w-full" style={{ borderWidth: "0px 0px 4px 4px", borderTopStyle: "initial", borderRightStyle: "initial", borderBottomStyle: "solid", borderLeftStyle: "solid", borderTopColor: "initial", borderRightColor: "initial", borderBottomColor: "rgb(42, 35, 30)", borderLeftColor: "rgb(42, 35, 30)", borderImage: "initial", padding: "2px", opacity: "1" }}>
+                  <div className="text-red font-console">CAN STAKE</div>
                   {unstakedSheep.length == 0 && unstakedWolf.length == 0 ? <>
                     <div className="text-red font-console">Can Stake</div><div className="text-red font-console text-xs">NO TOKENS</div>
                   </> : <div className="overflow-x-scroll">
@@ -414,8 +415,9 @@ export default function Home() {
                 <div className="text-center font-console pt-1 text-red text-2xl">STAKED</div>
                 <div className="h-4"></div>
                 <div className="w-full" style={{ borderWidth: "0px 0px 4px 4px", borderTopStyle: "initial", borderRightStyle: "initial", borderBottomStyle: "solid", borderLeftStyle: "solid", borderTopColor: "initial", borderRightColor: "initial", borderBottomColor: "rgb(42, 35, 30)", borderLeftColor: "rgb(42, 35, 30)", borderImage: "initial", padding: "2px", opacity: "1" }}>
+                  <div className="text-red font-console">BARN</div>
                   {stakedSheep.length == 0 ? <>
-                    <div className="text-red font-console">BARN</div><div className="text-red font-console text-xs">NO TOKENS</div>
+                    <div className="text-red font-console text-xs">NO TOKENS</div>
                   </> : <div className="overflow-x-scroll">
                     {stakedSheep.map((item, i) => renderStaked(item, "sheep"))}
                   </div>
@@ -423,8 +425,9 @@ export default function Home() {
                 </div>
                 <div className="h-2"></div>
                 <div className="w-full" style={{ borderWidth: "0px 0px 4px 4px", borderTopStyle: "initial", borderRightStyle: "initial", borderBottomStyle: "solid", borderLeftStyle: "solid", borderTopColor: "initial", borderRightColor: "initial", borderBottomColor: "rgb(42, 35, 30)", borderLeftColor: "rgb(42, 35, 30)", borderImage: "initial", padding: "2px", opacity: "1" }}>
+                  <div className="text-red font-console">WOLFPACK</div>
                   {stakedWolf.length == 0 ? <>
-                    <div className="text-red font-console">WOLFPACK</div><div className="text-red font-console text-xs">NO TOKENS</div>
+                    <div className="text-red font-console text-xs">NO TOKENS</div>
                   </> : <div className="overflow-x-scroll">
                     {stakedWolf.map((item, i) => renderStaked(item, "wolf"))}
                   </div>
