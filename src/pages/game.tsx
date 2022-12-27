@@ -332,7 +332,7 @@ export default function Home() {
     const itemIn = unstakedSelected.includes(item);
     return <div key={item} style={{ marginRight: "5px", marginLeft: "5px", border: itemIn ? "2px solid red" : "2px solid rgb(0,0,0,0)", overflow: 'hidden', display: "inline-block" }}>
       <div className="flex flex-col items-center">
-        <div style={{ fontSize: "0.75rem" }}>#{item}</div>
+        <div style={{ fontSize: "0.75rem", height: "1rem" }}>#{item}</div>
         <Image src={`/${type}.svg`} width={48} height={48} alt="{item}" onClick={() => itemIn ? removeUnstaked(item) : addUnstaked(item)} />
       </div>
     </div>
@@ -342,7 +342,7 @@ export default function Home() {
     const itemIn = stakedSelected.includes(item);
     return <div key={item} style={{ marginRight: "5px", marginLeft: "5px", border: itemIn ? "2px solid red" : "2px solid rgb(0,0,0,0)", overflow: 'hidden', display: "inline-block" }}>
       <div className="flex flex-col items-center">
-        <div style={{ fontSize: "0.75rem" }}>#{item}</div>
+        <div style={{ fontSize: "0.75rem", height: "1rem" }}>#{item}</div>
         <Image src={`/${type}.svg`} width={48} height={48} alt={`${item}`} onClick={() => itemIn ? removeStaked(item) : addStaked(item)} />
       </div>
     </div>
@@ -404,7 +404,7 @@ export default function Home() {
                 <div className="w-full" style={{ borderWidth: "0px 0px 4px 4px", borderTopStyle: "initial", borderRightStyle: "initial", borderBottomStyle: "solid", borderLeftStyle: "solid", borderTopColor: "initial", borderRightColor: "initial", borderBottomColor: "rgb(42, 35, 30)", borderLeftColor: "rgb(42, 35, 30)", borderImage: "initial", padding: "2px", opacity: "1" }}>
                   <div className="text-red font-console">CAN STAKE</div>
                   {unstakedSheep.length == 0 && unstakedWolf.length == 0 ? <>
-                    <div className="text-red font-console">Can Stake</div><div className="text-red font-console text-xs">NO TOKENS</div>
+                    <div className="text-red font-console text-xs">NO TOKENS</div>
                   </> : <div className="overflow-x-scroll">
                     {unstakedSheep.map((item, i) => renderUnstaked(item, "sheep"))}
                     {unstakedWolf.map((item, i) => renderUnstaked(item, "wolf"))}
@@ -446,7 +446,7 @@ export default function Home() {
                     <div className="text-center font-console pt-1" onClick={claim_wool}>Shear $WOOL</div>
                   </div>
                   <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
-                    <div className="text-center font-console pt-1" onClick={unstake_nft}>Shear $WOOL and Unstake</div>
+                    <div className="text-center font-console pt-1" onClick={unstake_nft}>Shear $WOOL & Unstake</div>
                   </div>
                 </div>}
                 {/* <div className="h-4"></div>
