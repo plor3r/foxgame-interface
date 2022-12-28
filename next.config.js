@@ -17,6 +17,7 @@ const nextConfig = {
       "miro.medium.com",
       "www.gitbook.com",
       "raw.githubusercontent.com",
+      "wolfgame.s3.amazonaws.com",
     ],
   },
   webpack5: true,
