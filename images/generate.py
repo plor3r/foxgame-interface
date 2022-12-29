@@ -7,14 +7,14 @@ base = {
     "attributes": []
 }
 
-base["image"] = "https://wolfgame.s3.amazonaws.com/sheep.svg"
 for i in range(1, 13809):
     base["name"] = f"Sheep #{i}"
-    with open(f"sheep/{i}.json", "w") as f:
+    base["image"] = f"https://wolfgame.s3.amazonaws.com/sheep/{i}.svg"
+    with open(f"sheepdata/{i}.json", "w") as f:
         f.write(json.dumps(base))
 
-base["image"] = "https://wolfgame.s3.amazonaws.com/wolf.svg"
 for i in range(1, 13809):
     base["name"] = f"Wolf #{i}"
-    with open(f"wolf/{i}.json", "w") as f:
+    base["image"] = f"https://wolfgame.s3.amazonaws.com/wolf/{i}.svg"
+    with open(f"wolfdata/{i}.json", "w") as f:
         f.write(json.dumps(base))

@@ -38,8 +38,8 @@ export default function Home() {
   const [woolBalance, setWoolBalance] = useState(0);
   const [mintAmount, setMintAmount] = useState(1);
 
-  const MAX_TOKEN = 1000;
-  const PAID_TOKENS = 200;
+  const MAX_TOKEN = 200;
+  const PAID_TOKENS = 40;
   const MINT_PRICE = 1;
 
   function check_if_connected() {
@@ -333,7 +333,7 @@ export default function Home() {
     return <div key={item} style={{ marginRight: "5px", marginLeft: "5px", border: itemIn ? "2px solid red" : "2px solid rgb(0,0,0,0)", overflow: 'hidden', display: "inline-block" }}>
       <div className="flex flex-col items-center">
         <div style={{ fontSize: "0.75rem", height: "1rem" }}>#{item}</div>
-        <Image src={`https://wolfgame.s3.amazonaws.com/${type}.svg`} width={48} height={48} alt="{item}" onClick={() => itemIn ? removeUnstaked(item) : addUnstaked(item)} />
+        <Image src={`https://wolfgame.s3.amazonaws.com/${type}/${item}.svg`} width={48} height={48} alt="{item}" onClick={() => itemIn ? removeUnstaked(item) : addUnstaked(item)} />
       </div>
     </div>
   }
@@ -343,7 +343,7 @@ export default function Home() {
     return <div key={item} style={{ marginRight: "5px", marginLeft: "5px", border: itemIn ? "2px solid red" : "2px solid rgb(0,0,0,0)", overflow: 'hidden', display: "inline-block" }}>
       <div className="flex flex-col items-center">
         <div style={{ fontSize: "0.75rem", height: "1rem" }}>#{item}</div>
-        <Image src={`https://wolfgame.s3.amazonaws.com/${type}.svg`} width={48} height={48} alt={`${item}`} onClick={() => itemIn ? removeStaked(item) : addStaked(item)} />
+        <Image src={`https://wolfgame.s3.amazonaws.com/${type}/${item}.svg`} width={48} height={48} alt={`${item}`} onClick={() => itemIn ? removeStaked(item) : addStaked(item)} />
       </div>
     </div>
   }
