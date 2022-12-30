@@ -2,9 +2,12 @@ import { useWallet } from "@manahippo/aptos-wallet-adapter";
 import { useContext } from "react";
 import { ModalContext } from "./ModalContext";
 import { WalletModal } from "./WalletModal";
+import {
+  NETWORK,
+} from "../config/constants";
 
 export function AptosConnect() {
-  const { account } = useWallet();
+  const { account, network } = useWallet();
   const { modalState, setModalState } = useContext(ModalContext);
 
   return (
@@ -19,7 +22,8 @@ export function AptosConnect() {
             display: "inline",
           }}
         >
-          {account!.address!.toString()!}
+          {/* {account!.address!.toString()!} */}
+          {network!.name.toLocaleLowerCase() == NETWORK.toLowerCase() ? account!.address!.toString()! : `Please Switch to ${NETWORK}`}
         </button>
       ) : (
         <button

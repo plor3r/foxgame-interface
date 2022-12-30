@@ -3,7 +3,8 @@ import Link from "next/link";
 import { NavItem } from "./NavItem";
 import { AptosConnect } from "./AptosConnect";
 import {
-  MODULE_URL
+  MODULE_URL,
+  NETWORK,
 } from "../config/constants";
 
 export function NavBar() {
@@ -13,6 +14,7 @@ export function NavBar() {
         <Link href="/">
           <div className="title cursor-pointer" style={{ fontSize: "24px" }}>Wolf Game</div>
         </Link>
+        {NETWORK != "mainnet" && <div className="cursor-pointer ml-2 text-red" style={{ fontSize: "14px" }}>{NETWORK}</div>}
         <ul className="menu menu-horizontal p-0 ml-5">
           <li className="font-sans text-lg">
             <Link href='/game'>Play</Link>

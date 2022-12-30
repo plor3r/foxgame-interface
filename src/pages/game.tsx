@@ -1,11 +1,11 @@
 import {
   DAPP_ADDRESS,
   APTOS_FAUCET_URL,
-  APTOS_NODE_URL
+  APTOS_NODE_URL,
+  NETWORK,
 } from "../config/constants";
 import Image from 'next/image';
 import { useWallet } from "@manahippo/aptos-wallet-adapter";
-import { MoveResource } from "@martiandao/aptos-web3-bip44.js/dist/generated";
 import { useState, useEffect } from "react";
 import React from "react";
 import {
@@ -16,9 +16,6 @@ import {
 } from "@martiandao/aptos-web3-bip44.js";
 
 import newAxios from "../utils/axios_utils";
-
-// import { TypeTagVector } from "@martiandao/aptos-web3-bip44.js/dist/aptos_types";
-// import {TypeTagParser} from "@martiandao/aptos-web3-bip44.js/dist/transaction_builder/builder_utils";
 
 export default function Home() {
 
@@ -38,8 +35,8 @@ export default function Home() {
   const [woolBalance, setWoolBalance] = useState(0);
   const [mintAmount, setMintAmount] = useState(1);
 
-  const MAX_TOKEN = 200;
-  const PAID_TOKENS = 40;
+  const MAX_TOKEN = 50000;
+  const PAID_TOKENS = 10000;
   const MINT_PRICE = 1;
 
   function check_if_connected() {
@@ -350,7 +347,7 @@ export default function Home() {
 
   return (
     <div style={{ paddingTop: '1px' }}>
-      <div className="mb-5 text-center title">Wolf Game</div>
+      <div className="text-center"><span className="mb-5 text-center title">Wolf Game</span>{ NETWORK != "mainnet" && <span className="cursor-pointer ml-2 text-red" style={{ fontSize: "18px", verticalAlign: "100%" }}>{NETWORK}</span>}</div>
       <div className="flex flex-row items-center space-x-2 justify-center">
         <div className="mb-5 text-sm font-console basis-2/5 " style={{ maxWidth: "100%" }}>
           <div className="relative flex justify-center w-full h-full p-1 overflow-hidden md:p-5" style={{ borderImage: "url('/wood-frame.svg') 30 / 1 / 0 stretch", borderWidth: "30px", background: "rgb(237, 227, 209)" }}>
