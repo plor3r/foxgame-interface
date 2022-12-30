@@ -23,7 +23,7 @@ export function AptosConnect() {
           }}
         >
           {/* {account!.address!.toString()!} */}
-          {network!.name.toLocaleLowerCase() == NETWORK.toLowerCase() ? account!.address!.toString()! : `Please Switch to ${NETWORK}`}
+          {network!.name!.toLocaleLowerCase() == NETWORK.toLowerCase() ? account!.address!.toString()! : `Please Switch to ${NETWORK}`}
         </button>
       ) : (
         <button
