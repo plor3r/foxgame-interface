@@ -301,7 +301,7 @@ export default function Home() {
       await getTokens()
     }
     getToken()
-  }, [connected, mintTx, stakeTx, claimTx, stakedSheep, stakedWolf]);
+  }, [mintTx, stakeTx, claimTx, stakedSheep, stakedWolf]);
 
   function addStaked(item: number) {
     setUnstakedSelected([])
