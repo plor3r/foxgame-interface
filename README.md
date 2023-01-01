@@ -2,6 +2,9 @@
 
 Wolf Game UI
 
+Aptos testnet: https://test.wolfgameaptos.xyz/
+Aptos mainnet: https://wolfgameaptos.xyz/
+
 ## How to deploy
 
 1. `git clone https://github.com/AptosWolfGame/wolf_game_interface.git`
