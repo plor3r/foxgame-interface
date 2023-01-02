@@ -37,7 +37,7 @@ export default function Home() {
 
   const MAX_TOKEN = 50000;
   const PAID_TOKENS = 10000;
-  const MINT_PRICE = 6.942;
+  const MINT_PRICE = 0.99;
 
   function check_if_connected() {
     if (!connected) {
