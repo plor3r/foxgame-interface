@@ -347,7 +347,10 @@ export default function Home() {
 
   return (
     <div style={{ paddingTop: '1px' }}>
-      <div className="text-center"><span className="mb-5 text-center title">Wolf Game</span>{ NETWORK != "mainnet" && <span className="cursor-pointer ml-2 text-red" style={{ fontSize: "18px", verticalAlign: "100%" }}>{NETWORK}</span>}</div>
+      <div className="text-center"><span className="mb-5 text-center title">Wolf Game</span>
+        {NETWORK == "mainnet" ? <span className="cursor-pointer ml-2 text-red title-upper" style={{ fontSize: "18px", verticalAlign: "100%" }}>Aptos</span>
+          : <span className="cursor-pointer ml-2 text-red title-upper" style={{ fontSize: "18px", verticalAlign: "100%" }}>{NETWORK}</span>}
+      </div>
       <div className="flex flex-row items-center space-x-2 justify-center">
         <div className="mb-5 text-sm font-console basis-2/5 " style={{ maxWidth: "100%" }}>
           <div className="relative flex justify-center w-full h-full p-1 overflow-hidden md:p-5" style={{ borderImage: "url('/wood-frame.svg') 30 / 1 / 0 stretch", borderWidth: "30px", background: "rgb(237, 227, 209)" }}>
