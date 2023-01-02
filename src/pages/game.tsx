@@ -354,7 +354,7 @@ export default function Home() {
       <div className="flex flex-row items-center space-x-2 justify-center">
         <div className="mb-5 text-sm font-console basis-2/5 " style={{ maxWidth: "100%" }}>
           <div className="relative flex justify-center w-full h-full p-1 overflow-hidden md:p-5" style={{ borderImage: "url('/wood-frame.svg') 30 / 1 / 0 stretch", borderWidth: "30px", background: "rgb(237, 227, 209)" }}>
-            <div className="absolute" style={{ width: "120%", height: "120%", top: "-20px", left: "-20px", opacity: "0.04", backgroundImage: "url('/wood-mask.svg')", backgroundRepeat: "repeat", backgroundSize: "400px 268px" }}></div>
+            <div className="absolute wood-mask"></div>
             <div className="relative w-full h-full z-index:5">
               <div className="flex flex-col items-center">
                 <div className="text-center font-console pt-1 text-red text-2xl">MINTING</div>
@@ -393,8 +393,8 @@ export default function Home() {
           </div>
         </div>
         <div className="mb-5 text-sm font-console basis-2/5" style={{ maxWidth: "50%" }}>
-          <div className="relative flex justify-center w-full h-full p-1 overflow-hidden md:p-5" style={{ borderImage: "url('./wood-frame.svg') 30 / 1 / 0 stretch", borderWidth: "30px", background: "rgb(237, 227, 209);" }}>
-            <div className="absolute" style={{ width: "120%", height: "120%", top: "-20px", left: "-20px", opacity: "0.04", backgroundImage: "url('/wood-mask.svg')", backgroundRepeat: "repeat", backgroundSize: "400px 268px" }}></div>
+          <div className="relative flex justify-center w-full h-full p-1 overflow-hidden md:p-5" style={{ borderImage: "url('./wood-frame.svg') 30 / 1 / 0 stretch", borderWidth: "30px", background: "rgb(237, 227, 209)" }}>
+            <div className="absolute wood-mask"></div>
             <div className="relative w-full h-full z-index:5">
               <div className="flex flex-col items-center">
                 <div className="text-center font-console pt-1 text-xl">$WOOL in your wallet: {(woolBalance / 100000000).toFixed(2)} $WOOL</div>
