@@ -12,7 +12,7 @@ export default function Home() {
               <div className="flex flex-col items-center ">
                 <img alt="shepherd" src="/shepherd.gif" className="mt-8 w-80" />
                 <div className="w-full my-8 px-4 md:px-16 text-lg">
-                  <span className="text-2xl">Friends,</span><br /><br />Welcome to Wolf Game on Aptos, where Sheep and Wolves on the blockchain compete for a tempting prize of WOOL, with deadly high stakes.<br /><br />Your successes and failures shall be defined by the choices you make.<br /><br />The game has begun.<br /><br />
+                  <span className="text-2xl">Friends,</span><br /><br />Welcome to Wolf Game on <span className='title-upper text-xl'>Aptos</span>, where Sheep and Wolves on the blockchain compete for a tempting prize of WOOL, with deadly high stakes.<br /><br />Your successes and failures shall be defined by the choices you make.<br /><br />The game has begun.<br /><br />
                   <span className="text-2xl">- The Shepherd</span></div>
                 <div className="w-48 h-10 pt-1.5 flex justify-center align-center px-2 cursor-pointer" style={{ borderStyle: "outset", borderColor: "rgb(134, 34, 39)", borderWidth: "4px", backgroundColor: "rgb(177, 29, 24)" }}>
                   <div className="flex flex-row w-full">
