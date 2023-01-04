@@ -208,38 +208,35 @@ export default function Home() {
   }
 
   function stake() {
-    const tokenId = unstakedSelected[0];
     return {
       type: "entry_function_payload",
-      function: DAPP_ADDRESS + "::barn::add_many_to_barn_and_pack_with_index",
+      function: DAPP_ADDRESS + "::barn::add_many_to_barn_and_pack_with_indice",
       type_arguments: [],
       arguments: [
-        tokenId,
+        unstakedSelected,
       ],
     };
   }
 
   function unstake() {
-    const tokenId = stakedSelected[0];
     return {
       type: "entry_function_payload",
-      function: DAPP_ADDRESS + "::barn::claim_many_from_barn_and_pack_with_index",
+      function: DAPP_ADDRESS + "::barn::claim_many_from_barn_and_pack_with_indice",
       type_arguments: [],
       arguments: [
-        tokenId,
+        stakedSelected,
         true
       ],
     };
   }
 
   function claim() {
-    const tokenId = stakedSelected[0];
     return {
       type: "entry_function_payload",
-      function: DAPP_ADDRESS + "::barn::claim_many_from_barn_and_pack_with_index",
+      function: DAPP_ADDRESS + "::barn::claim_many_from_barn_and_pack_with_indice",
       type_arguments: [],
       arguments: [
-        tokenId,
+        stakedSelected,
         false
       ],
     };
@@ -305,8 +302,7 @@ export default function Home() {
 
   function addStaked(item: number) {
     setUnstakedSelected([])
-    // setUnstakedSelected([...new Set([...unstakedSelected, item])])
-    setStakedSelected([item])
+    setStakedSelected([...stakedSelected, item])
   }
 
   function removeStaked(item: number) {
@@ -316,8 +312,7 @@ export default function Home() {
 
   function addUnstaked(item: number) {
     setStakedSelected([])
-    // setUnstakedSelected([...new Set([...unstakedSelected, item])])
-    setUnstakedSelected([item])
+    setUnstakedSelected([...unstakedSelected, item])
   }
 
   function removeUnstaked(item: number) {
