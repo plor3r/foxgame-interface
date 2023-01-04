@@ -373,9 +373,9 @@ export default function Home() {
                 <div className="h-4"></div>
                 <div>
                   <span className="text-black text-xl">AMOUNT </span>
-                  <i className="text-red arrow down cursor-pointer ml-2 mr-2" onClick={() => setMintAmount(Math.max(1, mintAmount - 1))}></i>
+                  {/* <i className="text-red arrow down cursor-pointer ml-2 mr-2" onClick={() => setMintAmount(Math.max(1, mintAmount - 1))}></i> */}
                   <span className="text-red text-2xl">{mintAmount}</span>
-                  <i className="text-red arrow up cursor-pointer ml-2" onClick={() => setMintAmount(Math.min(10, mintAmount + 1))}></i>
+                  {/* <i className="text-red arrow up cursor-pointer ml-2" onClick={() => setMintAmount(Math.min(10, mintAmount + 1))}></i> */}
                 </div>
                 <div className="h-2"></div>
                 <div><span className="text-black text-xl">COST: </span><span className="text-red text-xl">{cost}</span></div>
