@@ -5,22 +5,27 @@ import {
   NETWORK,
 } from "../config/constants";
 import Image from 'next/image';
-import { useWallet } from "@manahippo/aptos-wallet-adapter";
+import {
+  ConnectButton,
+  useAccountBalance,
+  useWallet,
+  useSuiProvider,
+} from '@suiet/wallet-kit';
 import { useState, useEffect } from "react";
 import React from "react";
-import {
-  AptosAccount,
-  WalletClient,
-  HexString,
-  AptosClient,
-} from "@martiandao/aptos-web3-bip44.js";
+// import {
+//   AptosAccount,
+//   WalletClient,
+//   HexString,
+//   AptosClient,
+// } from "@martiandao/aptos-web3-bip44.js";
 
 import newAxios from "../utils/axios_utils";
 
 export default function Home() {
 
-  const { account, signAndSubmitTransaction, connected } = useWallet();
-  const client = new WalletClient(APTOS_NODE_URL, APTOS_FAUCET_URL);
+  const { getAccounts, signAndExecuteTransaction, status, connected, account } = useWallet();
+  // const client = new WalletClient(APTOS_NODE_URL, APTOS_FAUCET_URL);
   const [mintTx, setMintTx] = useState('');
   const [stakeTx, setStakeTx] = useState('');
   const [claimTx, setClaimTx] = useState('');
@@ -39,6 +44,11 @@ export default function Home() {
   const PAID_TOKENS = 10000;
   const MINT_PRICE = 0.99;
 
+  const PACKAGE_ID = "0x6d4e28b2159e2dd7983efcf462c975010b9b852e";
+  const GLOBAL = "0x32abdbb6a12fa75c093f254098b63b545e3f3d8f";
+  const EGG_TREASUTY = "0x896617f6866e9e830bc7e82a7ea20c2908465c3f";
+
+
   function check_if_connected() {
     if (!connected) {
       alert("Please connect wallet first")
@@ -47,207 +57,215 @@ export default function Home() {
 
   async function mint_nft() {
     check_if_connected()
-    const result = await signAndSubmitTransaction(
-      mint(false),
-      { gas_unit_price: 100 }
+    const result = await signAndExecuteTransaction(
+      {
+        transaction: {
+          kind: 'moveCall',
+          data: mint(false),
+        }
+      }
     );
-    if (result) {
-      setMintTx(result.hash);
-    }
+    console.log(result)
   }
 
   async function mint_nft_stake() {
     check_if_connected()
-    const result = await signAndSubmitTransaction(
-      mint(true),
-      { gas_unit_price: 100 }
+    const result = await signAndExecuteTransaction(
+      {
+        transaction: {
+          kind: 'moveCall',
+          data: mint(true),
+        }
+      }
     );
     if (result) {
-      setMintTx(result.hash);
+      // setMintTx(result.hash);
     }
   }
 
   async function stake_nft() {
     check_if_connected()
-    const result = await signAndSubmitTransaction(
-      stake(),
-      { gas_unit_price: 100 }
+    const result = await signAndExecuteTransaction(
+      {
+        transaction: {
+          kind: 'moveCall',
+          data: stake(),
+        }
+      }
     );
     if (result) {
-      setStakeTx(result.hash);
+      // setStakeTx(result.hash);
       setUnstakedSelected([])
     }
   }
 
   async function unstake_nft() {
     check_if_connected()
-    const result = await signAndSubmitTransaction(
-      unstake(),
-      { gas_unit_price: 100 }
+    const result = await signAndExecuteTransaction(
+      {
+        transaction: {
+          kind: 'moveCall',
+          data: unstake(),
+        }
+      }
     );
     if (result) {
-      setClaimTx(result.hash);
+      // setClaimTx(result.hash);
       setStakedSelected([])
     }
   }
 
   async function claim_wool() {
     check_if_connected()
-    const result = await signAndSubmitTransaction(
-      claim(),
-      { gas_unit_price: 100 }
+    const result = await signAndExecuteTransaction(
+      {
+        transaction: {
+          kind: 'moveCall',
+          data: claim(),
+        }
+      }
     );
     if (result) {
-      setClaimTx(result.hash);
-    }
-  }
-
-  async function register_coin() {
-    check_if_connected()
-    const result = await signAndSubmitTransaction(
-      register(),
-      { gas_unit_price: 100 }
-    );
-    if (result) {
-      console.log(result);
+      // setClaimTx(result.hash);
     }
   }
 
   async function getTokens() {
-    if (!connected) { return }
-    const result = await client.getTokens(account!.address!.toString());
-    if (result) {
-      let allNFT = result.filter(t => t.token.collection === "Woolf Game NFT");
-      let sheep = allNFT.filter(t => t.token.name.startsWith("Sheep"))
-      let wolf = allNFT.filter(t => t.token.name.startsWith("Wolf"))
-      setUnstakedSheep(sheep.map(e => {
-        let i = e.token.name.indexOf("#")
-        return parseInt(e.token.name.slice(i + 1))
-      }).filter(t => !stakedSheep.includes(t)))
-      setUnstakedWolf(wolf.map(e => {
-        let i = e.token.name.indexOf("#")
-        return parseInt(e.token.name.slice(i + 1))
-      }).filter(t => !stakedWolf.includes(t)))
-    }
+    // if (!connected()) { return }
+    // const result = await client.getTokens(account!.address!.toString());
+    // if (result) {
+    //   let allNFT = result.filter(t => t.token.collection === "Woolf Game NFT");
+    //   let sheep = allNFT.filter(t => t.token.name.startsWith("Sheep"))
+    //   let wolf = allNFT.filter(t => t.token.name.startsWith("Wolf"))
+    //   setUnstakedSheep(sheep.map(e => {
+    //     let i = e.token.name.indexOf("#")
+    //     return parseInt(e.token.name.slice(i + 1))
+    //   }).filter(t => !stakedSheep.includes(t)))
+    //   setUnstakedWolf(wolf.map(e => {
+    //     let i = e.token.name.indexOf("#")
+    //     return parseInt(e.token.name.slice(i + 1))
+    //   }).filter(t => !stakedWolf.includes(t)))
+    // }
   }
 
   async function getCollectionSupply() {
-    const result = await client.getAccountResource(DAPP_ADDRESS, DAPP_ADDRESS + "::token_helper::Data");
-    if (result) {
-      setCollectionSupply(result.data.collection_supply)
-    }
+    // const result = await client.getAccountResource(DAPP_ADDRESS, DAPP_ADDRESS + "::token_helper::Data");
+    // if (result) {
+    //   setCollectionSupply(result.data.collection_supply)
+    // }
   }
 
   async function getWoolBalance() {
-    if (!connected) {
-      return;
-    }
-    const result = await client.getCoinBalance(account!.address!.toString(), DAPP_ADDRESS + "::wool::Wool");
-    if (result) {
-      setWoolBalance(result);
-    }
+    // if (!connected()) {
+    //   return;
+    // }
+    // const result = await client.getCoinBalance(account!.address!.toString(), DAPP_ADDRESS + "::wool::Wool");
+    // if (result) {
+    //   setWoolBalance(result);
+    // }
   }
 
   async function getStakedSheep() {
-    if (!connected) {
-      return
-    }
-    const result = await client.getAccountResource(DAPP_ADDRESS, DAPP_ADDRESS + "::barn::StakedSheep");
-    if (!result) {
-      return
-    }
-    const stakedHandle = result.data.items.handle
-    newAxios.post(
-      `${APTOS_NODE_URL}tables/${stakedHandle}/item`,
-      {
-        "key_type": "address",
-        "value_type": "vector<u64>",
-        "key": account!.address!.toString()
-      },
-    ).then(
-      value => {
-        setStakedSheep(value.data.map((v: string) => parseInt(v)))
-      }
-    ).catch();
+    // if (!connected()) {
+    //   return
+    // }
+    // const result = await client.getAccountResource(DAPP_ADDRESS, DAPP_ADDRESS + "::barn::StakedSheep");
+    // if (!result) {
+    //   return
+    // }
+    // const stakedHandle = result.data.items.handle
+    // newAxios.post(
+    //   `${APTOS_NODE_URL}tables/${stakedHandle}/item`,
+    //   {
+    //     "key_type": "address",
+    //     "value_type": "vector<u64>",
+    //     "key": account!.address!.toString()
+    //   },
+    // ).then(
+    //   value => {
+    //     setStakedSheep(value.data.map((v: string) => parseInt(v)))
+    //   }
+    // ).catch();
   }
 
   async function getStakedWolf() {
-    if (!connected) {
-      return
-    }
-    const result = await client.getAccountResource(DAPP_ADDRESS, DAPP_ADDRESS + "::barn::StakedWolf");
-    if (!result) {
-      return
-    }
-    const stakedHandle = result.data.items.handle
-    newAxios.post(
-      `${APTOS_NODE_URL}tables/${stakedHandle}/item`,
-      {
-        "key_type": "address",
-        "value_type": "vector<u64>",
-        "key": account!.address!.toString()
-      },
-    ).then(
-      value => {
-        setStakedWolf(value.data.map((v: string) => parseInt(v)))
-      }
-    ).catch();
-
+    // if (!connected()) {
+    //   return
+    // }
+    // const result = await client.getAccountResource(DAPP_ADDRESS, DAPP_ADDRESS + "::barn::StakedWolf");
+    // if (!result) {
+    //   return
+    // }
+    // const stakedHandle = result.data.items.handle
+    // newAxios.post(
+    //   `${APTOS_NODE_URL}tables/${stakedHandle}/item`,
+    //   {
+    //     "key_type": "address",
+    //     "value_type": "vector<u64>",
+    //     "key": account!.address!.toString()
+    //   },
+    // ).then(
+    //   value => {
+    //     setStakedWolf(value.data.map((v: string) => parseInt(v)))
+    //   }
+    // ).catch();
   }
 
   function mint(stake: boolean) {
     return {
-      type: "entry_function_payload",
-      function: DAPP_ADDRESS + "::woolf::mint",
-      type_arguments: [],
+      packageObjectId: PACKAGE_ID,
+      module: 'fox',
+      function: 'mint',
+      typeArguments: [],
       arguments: [
-        mintAmount,
-        stake
+        GLOBAL, 2, stake, []
       ],
+      gasPayment: '0x0878eb02be28b6cc4abf43da8720dfd16e43ca48',
+      gasBudget: 30000,
     };
   }
 
   function stake() {
     return {
-      type: "entry_function_payload",
-      function: DAPP_ADDRESS + "::barn::add_many_to_barn_and_pack_with_indice",
-      type_arguments: [],
+      packageObjectId: PACKAGE_ID,
+      module: 'fox',
+      function: 'add_many_to_barn_and_pack_with_indice',
+      typeArguments: [],
       arguments: [
-        unstakedSelected,
+        unstakedSelected
       ],
+      // gasPayment?: ObjectId;
+      gasBudget: 1000,
     };
   }
 
   function unstake() {
     return {
-      type: "entry_function_payload",
-      function: DAPP_ADDRESS + "::barn::claim_many_from_barn_and_pack_with_indice",
-      type_arguments: [],
+      packageObjectId: PACKAGE_ID,
+      module: 'fox',
+      function: 'claim_many_from_barn_and_pack_with_indice',
+      typeArguments: [],
       arguments: [
         stakedSelected,
         true
       ],
+      // gasPayment?: ObjectId;
+      gasBudget: 1000,
     };
   }
 
   function claim() {
     return {
-      type: "entry_function_payload",
-      function: DAPP_ADDRESS + "::barn::claim_many_from_barn_and_pack_with_indice",
-      type_arguments: [],
+      packageObjectId: PACKAGE_ID,
+      module: 'fox',
+      function: 'claim_many_from_barn_and_pack_with_indice',
+      typeArguments: [],
       arguments: [
         stakedSelected,
-        false
+        false,
       ],
-    };
-  }
-
-  function register() {
-    return {
-      type: "entry_function_payload",
-      function: DAPP_ADDRESS + "::wool::register_coin",
-      type_arguments: [],
-      arguments: [],
+      // gasPayment?: ObjectId;
+      gasBudget: 1000,
     };
   }
 
@@ -256,11 +274,11 @@ export default function Home() {
     if (collectionSupply < PAID_TOKENS) {
       setCost(`${(MINT_PRICE * amount).toFixed(3)} APT`)
     } else if (collectionSupply <= MAX_TOKEN * 2 / 5) {
-      setCost(`${20000 * amount} WOOL`)
+      setCost(`${20 * amount} EGG`)
     } else if (collectionSupply <= MAX_TOKEN * 4 / 5) {
-      setCost(`${40000 * amount} WOOL`)
+      setCost(`${40 * amount} EGG`)
     } else {
-      setCost(`${80000 * amount} WOOL`)
+      setCost(`${80 * amount} EGG`)
     }
   }, [collectionSupply, mintAmount]);
 
@@ -444,12 +462,6 @@ export default function Home() {
                     <div className="text-center font-console pt-1" onClick={unstake_nft}>Shear $WOOL & Unstake</div>
                   </div>
                 </div>}
-                {/* <div className="h-4"></div>
-                  <div className="flex flex-row space-x-4">
-                    <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
-                      <div className="text-center font-console pt-1" onClick={register_coin}>Register Wool Coin</div>
-                    </div>
-                  </div> */}
               </div>
             </div>
           </div>

@@ -1,39 +1,29 @@
-import { useWallet } from "@manahippo/aptos-wallet-adapter";
-import { useContext } from "react";
-import { ModalContext } from "./ModalContext";
-import { WalletModal } from "./WalletModal";
 import {
-  NETWORK,
-} from "../config/constants";
+  ConnectButton,
+  useAccountBalance,
+  useWallet,
+  useSuiProvider,
+} from '@suiet/wallet-kit';
 
 export function AptosConnect() {
-  const { account, network } = useWallet();
-  const { modalState, setModalState } = useContext(ModalContext);
-
+  const { account, connected, allAvailableWallets } = useWallet();
+  console.log(allAvailableWallets)
   return (
     <>
-      {account?.address ? (
+      {connected ? (
         <button
           className="btn btn-primary w-48"
-          onClick={() => setModalState({ ...modalState, walletModal: true })}
           style={{
             textOverflow: "ellipsis",
             overflow: "hidden",
             display: "inline",
           }}
         >
-          {/* {account!.address!.toString()!} */}
-          {network!.name!.toLocaleLowerCase() == NETWORK.toLowerCase() ? account!.address!.toString()! : `Please Switch to ${NETWORK}`}
+          {account?.address}
         </button>
       ) : (
-        <button
-          className="btn"
-          onClick={() => setModalState({ ...modalState, walletModal: true })}
-        >
-          Connect wallet
-        </button>
+        <ConnectButton>Connect Wallet</ConnectButton>
       )}
-      <WalletModal />
     </>
   );
 }

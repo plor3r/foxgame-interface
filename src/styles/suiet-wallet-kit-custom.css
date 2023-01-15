@@ -1,0 +1,28 @@
+:root {
+    /* --wkit-accent-hs: 255, 30%; */
+    --wkit-on-accent-rgb: 255, 255, 255; /* Text color */
+    --wkit-bg-rgb: 239, 241, 245; /* BG when wallet connected */
+    --wkit-on-bg-rgb: 28, 29, 37; /* Accent Text color */
+    --wkit-font-family: "Inter", sans-serif;
+    --wkit-font-family-mono: "IBM Plex Mono", monospace;
+    --wkit-font-size-large: 18px;
+    --wkit-font-size-medium: 16px;
+    --wkit-font-size-small: 14px;
+    --wkit-line-height-large: 22px;
+    --wkit-line-height-medium: 20px;
+    --wkit-line-height-small: 17px;
+    --wkit-button-width: 240px;
+    --wkit-border-radius: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --wkit-accent-hs: 292, 91%;
+        --wkit-on-accent-rgb: 255, 255, 255;
+        --wkit-bg-rgb: 40, 40, 40;
+        --wkit-on-bg-rgb: 241, 241, 241;
+        --wkit-button-width: 284px;
+    }
+}
+/* //28, 29, 37 */
+/* //rgba(24, 26, 32, 1) */

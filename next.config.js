@@ -18,6 +18,7 @@ const nextConfig = {
       "www.gitbook.com",
       "raw.githubusercontent.com",
       "wolfgame.s3.amazonaws.com",
+      "cdn.martianwallet.xyz",
     ],
   },
   webpack5: true,
