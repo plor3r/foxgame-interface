@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { NavItem } from "./NavItem";
-import { AptosConnect } from "./AptosConnect";
+import { SuiConnect } from "./SuiConnect";
 import {
   MODULE_URL,
   NETWORK,
@@ -15,15 +15,15 @@ export function NavBar() {
           <div className="title cursor-pointer" style={{ fontSize: "24px" }}>Wolf Game</div>
         </Link>
         {NETWORK == "mainnet" ?
-          <div className="cursor-pointer ml-2 text-red title-upper" style={{ fontSize: "14px" }}>Aptos</div>
-          : <div className="cursor-pointer ml-2 text-red title-upper" style={{ fontSize: "14px" }}>{NETWORK}</div>}
+          <div className="cursor-pointer ml-2 text-red title-upper" style={{ fontSize: "14px" }}>Sui</div>
+          : <div className="cursor-pointer ml-2 text-red title-upper" style={{ fontSize: "14px" }}>Sui {NETWORK}</div>}
         <ul className="menu menu-horizontal p-0 ml-5">
           <li className="font-sans text-lg">
             <Link href='/game'>Play</Link>
           </li>
-          <li className="font-sans text-lg">
+          {/* <li className="font-sans text-lg">
             <Link href="/riskygame" target="_blank">Risky Game</Link>
-          </li>
+          </li> */}
           <li className="font-sans text-lg">
             <Link href="/whitepapers" target="_blank">Whitepapers</Link>
           </li>
@@ -35,7 +35,7 @@ export function NavBar() {
           </li>
         </ul>
       </div>
-      <AptosConnect />
+      <SuiConnect />
     </nav>
   );
 }

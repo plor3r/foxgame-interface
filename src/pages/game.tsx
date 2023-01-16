@@ -1,7 +1,5 @@
 import {
   DAPP_ADDRESS,
-  APTOS_FAUCET_URL,
-  APTOS_NODE_URL,
   NETWORK,
 } from "../config/constants";
 import Image from 'next/image';
@@ -13,12 +11,6 @@ import {
 } from '@suiet/wallet-kit';
 import { useState, useEffect } from "react";
 import React from "react";
-// import {
-//   AptosAccount,
-//   WalletClient,
-//   HexString,
-//   AptosClient,
-// } from "@martiandao/aptos-web3-bip44.js";
 
 import newAxios from "../utils/axios_utils";
 
@@ -44,9 +36,9 @@ export default function Home() {
   const PAID_TOKENS = 10000;
   const MINT_PRICE = 0.99;
 
-  const PACKAGE_ID = "0x6d4e28b2159e2dd7983efcf462c975010b9b852e";
-  const GLOBAL = "0x32abdbb6a12fa75c093f254098b63b545e3f3d8f";
-  const EGG_TREASUTY = "0x896617f6866e9e830bc7e82a7ea20c2908465c3f";
+  const PACKAGE_ID = DAPP_ADDRESS;
+  const GLOBAL = "0xe91eabff018b5da868a9ae145b87fca906d88250";
+  const EGG_TREASUTY = "0x3137a7279d1a79fc3988e4d141547813989dd0de";
 
 
   function check_if_connected() {
@@ -57,45 +49,55 @@ export default function Home() {
 
   async function mint_nft() {
     check_if_connected()
-    const result = await signAndExecuteTransaction(
-      {
+    try {
+      const data = mint(false)
+      const resData = await signAndExecuteTransaction({
         transaction: {
           kind: 'moveCall',
-          data: mint(false),
-        }
-      }
-    );
-    console.log(result)
+          data,
+        },
+      });
+      console.log('success', resData);
+      // setMessage('Mint succeeded');
+      // setTx('https://explorer.sui.io/transaction/' + resData.certificate.transactionDigest)
+    } catch (e) {
+      console.error('failed', e);
+      // setMessage('Mint failed: ' + e);
+      // setTx('');
+    }
   }
 
   async function mint_nft_stake() {
     check_if_connected()
-    const result = await signAndExecuteTransaction(
-      {
-        transaction: {
-          kind: 'moveCall',
-          data: mint(true),
+    try {
+      const resData = await signAndExecuteTransaction(
+        {
+          transaction: {
+            kind: 'moveCall',
+            data: mint(true),
+          }
         }
-      }
-    );
-    if (result) {
-      // setMintTx(result.hash);
+      )
+      console.log('success', resData);
+    } catch (e) {
+      console.error('failed', e);
     }
   }
 
   async function stake_nft() {
     check_if_connected()
-    const result = await signAndExecuteTransaction(
-      {
-        transaction: {
-          kind: 'moveCall',
-          data: stake(),
+    try {
+      const resData = await signAndExecuteTransaction(
+        {
+          transaction: {
+            kind: 'moveCall',
+            data: stake(),
+          }
         }
-      }
-    );
-    if (result) {
-      // setStakeTx(result.hash);
-      setUnstakedSelected([])
+      )
+      console.log('success', resData);
+    } catch (e) {
+      console.error('failed', e);
     }
   }
 
@@ -115,7 +117,7 @@ export default function Home() {
     }
   }
 
-  async function claim_wool() {
+  async function claim_egg() {
     check_if_connected()
     const result = await signAndExecuteTransaction(
       {
@@ -218,9 +220,8 @@ export default function Home() {
       function: 'mint',
       typeArguments: [],
       arguments: [
-        GLOBAL, 2, stake, []
+        GLOBAL, mintAmount.toString(), stake, ["0x91e5f1bd19cfb5ca593faf617e1b551201313457"]
       ],
-      gasPayment: '0x0878eb02be28b6cc4abf43da8720dfd16e43ca48',
       gasBudget: 30000,
     };
   }
@@ -229,7 +230,7 @@ export default function Home() {
     return {
       packageObjectId: PACKAGE_ID,
       module: 'fox',
-      function: 'add_many_to_barn_and_pack_with_indice',
+      function: 'add_many_to_barn_and_pack',
       typeArguments: [],
       arguments: [
         unstakedSelected
@@ -243,9 +244,11 @@ export default function Home() {
     return {
       packageObjectId: PACKAGE_ID,
       module: 'fox',
-      function: 'claim_many_from_barn_and_pack_with_indice',
+      function: 'claim_many_from_barn_and_pack',
       typeArguments: [],
       arguments: [
+        GLOBAL,
+        EGG_TREASUTY,
         stakedSelected,
         true
       ],
@@ -258,11 +261,13 @@ export default function Home() {
     return {
       packageObjectId: PACKAGE_ID,
       module: 'fox',
-      function: 'claim_many_from_barn_and_pack_with_indice',
+      function: 'claim_many_from_barn_and_pack',
       typeArguments: [],
       arguments: [
+        GLOBAL,
+        EGG_TREASUTY,
         stakedSelected,
-        false,
+        true
       ],
       // gasPayment?: ObjectId;
       gasBudget: 1000,
@@ -361,8 +366,8 @@ export default function Home() {
   return (
     <div style={{ paddingTop: '1px' }}>
       <div className="text-center"><span className="mb-5 text-center title">Wolf Game</span>
-        {NETWORK == "mainnet" ? <span className="cursor-pointer ml-2 text-red title-upper" style={{ fontSize: "18px", verticalAlign: "100%" }}>Aptos</span>
-          : <span className="cursor-pointer ml-2 text-red title-upper" style={{ fontSize: "18px", verticalAlign: "100%" }}>{NETWORK}</span>}
+        {NETWORK == "mainnet" ? <span className="cursor-pointer ml-2 text-red title-upper" style={{ fontSize: "18px", verticalAlign: "100%" }}>Sui</span>
+          : <span className="cursor-pointer ml-2 text-red title-upper" style={{ fontSize: "18px", verticalAlign: "100%" }}>Sui {NETWORK}</span>}
       </div>
       <div className="flex flex-row items-center space-x-2 justify-center">
         <div className="mb-5 text-sm font-console basis-2/5 " style={{ maxWidth: "100%" }}>
@@ -386,9 +391,9 @@ export default function Home() {
                 <div className="h-4"></div>
                 <div>
                   <span className="text-black text-xl">AMOUNT </span>
-                  {/* <i className="text-red arrow down cursor-pointer ml-2 mr-2" onClick={() => setMintAmount(Math.max(1, mintAmount - 1))}></i> */}
+                  <i className="text-red arrow down cursor-pointer ml-2 mr-2" onClick={() => setMintAmount(Math.max(1, mintAmount - 1))}></i>
                   <span className="text-red text-2xl">{mintAmount}</span>
-                  {/* <i className="text-red arrow up cursor-pointer ml-2" onClick={() => setMintAmount(Math.min(10, mintAmount + 1))}></i> */}
+                  <i className="text-red arrow up cursor-pointer ml-2" onClick={() => setMintAmount(Math.min(10, mintAmount + 1))}></i>
                 </div>
                 <div className="h-2"></div>
                 <div><span className="text-black text-xl">COST: </span><span className="text-red text-xl">{cost}</span></div>
@@ -456,7 +461,7 @@ export default function Home() {
                 </div>}
                 {stakedSelected.length > 0 && <div className="flex flex-row space-x-4">
                   <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
-                    <div className="text-center font-console pt-1" onClick={claim_wool}>Shear $WOOL</div>
+                    <div className="text-center font-console pt-1" onClick={claim_egg}>Shear $WOOL</div>
                   </div>
                   <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
                     <div className="text-center font-console pt-1" onClick={unstake_nft}>Shear $WOOL & Unstake</div>
