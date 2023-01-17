@@ -23,7 +23,7 @@ export default function Home() {
   const [mintTx, setMintTx] = useState('');
   const [stakeTx, setStakeTx] = useState('');
   const [claimTx, setClaimTx] = useState('');
-  
+
   const [cost, setCost] = useState('');
   const [unstakedSheep, setUnstakedSheep] = useState<Array<number>>([]);
   const [unstakedWolf, setUnstakedWolf] = useState<Array<number>>([]);
@@ -31,8 +31,8 @@ export default function Home() {
   const [stakedSheep, setStakedSheep] = useState<Array<number>>([]);
   const [stakedWolf, setStakedWolf] = useState<Array<number>>([]);
   const [stakedSelected, setStakedSelected] = useState<Array<number>>([])
-  const [woolBalance, setWoolBalance] = useState(0);
-  const [mintAmount, setMintAmount] = useState(1);
+  const [eggBalance, setEggBalance] = useState(0);
+
 
   const MAX_TOKEN = 50;
   const PAID_TOKENS = 10;
@@ -44,6 +44,7 @@ export default function Home() {
 
   const [unstakedFoC, setUnstakedFoC] = useState<Array<{ objectId: string, index: number, url: string }>>([]);
   const [collectionSupply, setCollectionSupply] = useState(0);
+  const [mintAmount, setMintAmount] = useState(1);
 
 
   function check_if_connected() {
@@ -168,7 +169,7 @@ export default function Home() {
     // }
     // const result = await client.getCoinBalance(account!.address!.toString(), DAPP_ADDRESS + "::wool::Wool");
     // if (result) {
-    //   setWoolBalance(result);
+    //   setEggBalance(result);
     // }
   }
 
@@ -329,17 +330,18 @@ export default function Home() {
     getToken()
   }, [mintTx, stakeTx, claimTx, stakedSheep, stakedWolf]);
 
+  // get unstaked fox or chicken
   useEffect(() => {
     if (connected) {
       (async () => {
         const objects = await provider.getObjectsOwnedByAddress(account!.address)
-  
+
         const foc = objects
           .filter(item => item.type === DAPP_ADDRESS + "::token_helper::FoxOrChicken")
           .map(item => item.objectId)
         const foces = await provider.getObjectBatch(foc)
         // console.log(foces)
-        const unstaked = foces.filter(item=> item.status === "Exists").map(item => {
+        const unstaked = foces.filter(item => item.status === "Exists").map(item => {
           return {
             objectId: item.details.data.fields.id.id,
             index: parseInt(item.details.data.fields.index),
@@ -353,17 +355,32 @@ export default function Home() {
     }
   }, [connected])
 
+  // get globla object
   useEffect(() => {
-      (async () => {
-        const globalObject = await provider.getObject(GLOBAL)
-        // console.log(globalObject.details.data.fields)
-        const focRegistry = globalObject.details.data.fields.foc_registry
-        setCollectionSupply(parseInt(focRegistry.fields.foc_born))
+    (async () => {
+      const globalObject = await provider.getObject(GLOBAL)
+      // console.log(globalObject.details.data.fields)
+      const focRegistry = globalObject.details.data.fields.foc_registry
+      setCollectionSupply(parseInt(focRegistry.fields.foc_born))
 
-        const barn = globalObject.details.data.fields.barn.fields.id.id
-        const pack = globalObject.details.data.fields.pack.fields.id.id
-      })()
+      const barn = globalObject.details.data.fields.barn.fields.id.id
+      const pack = globalObject.details.data.fields.pack.fields.id.id
+    })()
   })
+
+  // get egg balance
+  useEffect(() => {
+    (async () => {
+      const balanceObjects = await provider.getCoinBalancesOwnedByAddress(account!.address, DAPP_ADDRESS + "egg::EGG")
+      const balances = balanceObjects.filter(item => item.status === 'Exists').map(item => parseInt(item.details.data.fields.balance))
+      const initialValue = 0;
+      const sumWithInitial = balances.reduce(
+        (accumulator, currentValue) => accumulator + currentValue,
+        initialValue
+      )
+      setEggBalance(sumWithInitial);
+    })()
+  }, [connected])
 
   function addStaked(item: number) {
     setUnstakedSelected([])
@@ -457,7 +474,7 @@ export default function Home() {
             <div className="absolute wood-mask"></div>
             <div className="relative w-full h-full z-index:5">
               <div className="flex flex-col items-center">
-                <div className="text-center font-console pt-1 text-xl">$WOOL in your wallet: {(woolBalance / 100000000).toFixed(2)} $WOOL</div>
+                <div className="text-center font-console pt-1 text-xl">$EGG in your wallet: {(eggBalance / 1000000000).toFixed(2)} $EGG</div>
                 <div className="h-4"></div>
                 <div className="text-center font-console pt-1 text-red text-2xl">UNSTAKED</div>
                 <div className="h-4"></div>
