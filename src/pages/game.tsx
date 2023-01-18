@@ -33,8 +33,8 @@ export default function Home() {
   const MINT_PRICE = 0.99;
 
   const PACKAGE_ID = DAPP_ADDRESS;
-  const GLOBAL = "0x4177f81f063b9ef000a1e751e422a22ae8944a1f";
-  const EGG_TREASUTY = "0x4e69225a335d5937c6d43966540e3f97584196a2";
+  const GLOBAL = "0x08e019b5b3f5f10e961936792a0135d49a831b47";
+  const EGG_TREASUTY = "0xeb29588317182541bbae5268a89a69bc3bc41468";
 
   const [unstakedFoC, setUnstakedFoC] = useState<Array<{ objectId: string, index: number, url: string }>>([]);
   const [collectionSupply, setCollectionSupply] = useState(0);
@@ -217,15 +217,14 @@ export default function Home() {
   }
 
   useEffect(() => {
-    let amount = mintAmount;
     if (collectionSupply < PAID_TOKENS) {
-      setCost(`${(MINT_PRICE * amount).toFixed(3)} SUI`)
+      setCost(`${(MINT_PRICE * mintAmount).toFixed(3)} SUI`)
     } else if (collectionSupply <= MAX_TOKEN * 2 / 5) {
-      setCost(`${20 * amount} EGG`)
+      setCost(`${20 * mintAmount} EGG`)
     } else if (collectionSupply <= MAX_TOKEN * 4 / 5) {
-      setCost(`${40 * amount} EGG`)
+      setCost(`${40 * mintAmount} EGG`)
     } else {
-      setCost(`${80 * amount} EGG`)
+      setCost(`${80 * mintAmount} EGG`)
     }
   }, [collectionSupply, mintAmount]);
 
@@ -268,10 +267,10 @@ export default function Home() {
   useEffect(() => {
     (async () => {
       const globalObject = await provider.getObject(GLOBAL)
-      console.log(globalObject.details.data.fields.barn.fields)
-      const barn_staked = globalObject.details.data.fields.barn.fields.staked.fields.id.id
+      const barn_staked = globalObject.details.data.fields.barn.fields.id.id
       setBarnStakedObject(barn_staked)
-      const pack_staked = globalObject.details.data.fields.pack.fields.staked.fields.id.id
+
+      const pack_staked = globalObject.details.data.fields.pack.fields.id.id
       setPackStakedObject(pack_staked)
     })()
   })
@@ -281,22 +280,20 @@ export default function Home() {
     if (barnStakedObject !== '' && account) {
       (async () => {
         try {
-          const object = await provider.getObject(barnStakedObject)
-          console.log("object", object)
-          const objects = await sui_client.getDynamicFieldObject(barnStakedObject, account!.address);
-          // console.log("barn objects", objects)
-          if (objects != null) {
-            const chicken_staked = objects.details.data.fields.value
-            const chicken = await provider.getObjectBatch(chicken_staked)
-            console.log("chicken", chicken)
-            const staked = chicken.filter(item => item.status === "Deleted").map(item => {
+          // const object = await provider.getObject(barnStakedObject)
+          // console.log("object", object)
+          const dfObject = await sui_client.getDynamicFieldObject(barnStakedObject, account!.address);
+          if (dfObject != null) {
+            const chicken_staked = dfObject.details.data.fields.value
+            const chicken_stakes = await provider.getObjectBatch(chicken_staked)
+            const staked = chicken_stakes.filter(item => item.status === "Exists").map(item => {
+              let foc = item.details.data.fields.item
               return {
-                objectId: item.details.data.fields.id.id,
-                index: parseInt(item.details.data.fields.index),
-                url: item.details.data.fields.url,
+                objectId: foc.fields.id.id,
+                index: parseInt(foc.fields.index),
+                url: foc.fields.url,
               }
             })
-            console.log("barn staked", staked)
             setStakedChicken(staked)
           }
         }
@@ -316,12 +313,13 @@ export default function Home() {
           console.log("pack objects", objects)
           if (objects != null) {
             const fox_staked = objects.details.data.fields.value
-            const fox = await provider.getObjectBatch(fox_staked)
-            const staked = fox.filter(item => item.status === "Deleted").map(item => {
+            const fox_stakes = await provider.getObjectBatch(fox_staked)
+            const staked = fox_stakes.filter(item => item.status === "Exists").map(item => {
+              let foc = item.details.data.fields.item
               return {
-                objectId: item.details.data.fields.id.id,
-                index: parseInt(item.details.data.fields.index),
-                url: item.details.data.fields.url,
+                objectId: foc.fields.id.id,
+                index: parseInt(foc.fields.index),
+                url: foc.fields.url,
               }
             })
             console.log("pack staked", staked)
