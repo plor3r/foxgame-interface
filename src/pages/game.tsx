@@ -4,10 +4,7 @@ import {
 } from "../config/constants";
 import Image from 'next/image';
 import {
-  ConnectButton,
-  useAccountBalance,
   useWallet,
-  useSuiProvider,
 } from '@suiet/wallet-kit';
 import { useState, useEffect } from "react";
 import React from "react";
@@ -30,11 +27,11 @@ export default function Home() {
 
   const MAX_TOKEN = 50;
   const PAID_TOKENS = 10;
-  const MINT_PRICE = 0.99;
+  const MINT_PRICE = 0.0099;
 
-  const PACKAGE_ID = DAPP_ADDRESS;
-  const GLOBAL = "0x08e019b5b3f5f10e961936792a0135d49a831b47";
-  const EGG_TREASUTY = "0xeb29588317182541bbae5268a89a69bc3bc41468";
+  const PACKAGE_ID = remove_leading_zero(DAPP_ADDRESS);
+  const GLOBAL = "0x2216ece9c14a8b16040a304fadf65a7033a38109";
+  const EGG_TREASUTY = "0x40c7d773e474fedc610f07ee82c8d2126e48d1cf";
 
   const [unstakedFoC, setUnstakedFoC] = useState<Array<{ objectId: string, index: number, url: string }>>([]);
   const [collectionSupply, setCollectionSupply] = useState(0);
@@ -55,9 +52,13 @@ export default function Home() {
     }
   }
 
+  function remove_leading_zero(address: string) {
+    return address.replace(/0x[0]+/, '0x')
+  }
+
   async function mint_nft() {
     check_if_connected()
-    const objects = await provider.selectCoinSetWithCombinedBalanceGreaterThanOrEqual(account!.address, BigInt(1))
+    const objects = await provider.selectCoinSetWithCombinedBalanceGreaterThanOrEqual(account!.address, BigInt(9900000))
     const sui_objects = objects.filter(item => item.status === "Exists").map(item => item.details.data.fields.id.id)
     try {
       const resData = await signAndExecuteTransaction({
@@ -66,7 +67,9 @@ export default function Home() {
           data: mint(false, sui_objects),
         },
       });
-      console.log('success', resData);
+      if (resData.effects.status.status !== "success") {
+        console.log('failed', resData);
+      }
       setMintTx('https://explorer.sui.io/transaction/' + resData.certificate.transactionDigest)
     } catch (e) {
       console.error('failed', e);
@@ -75,7 +78,7 @@ export default function Home() {
 
   async function mint_nft_stake() {
     check_if_connected()
-    const objects = await provider.selectCoinSetWithCombinedBalanceGreaterThanOrEqual(account!.address, BigInt(1))
+    const objects = await provider.selectCoinSetWithCombinedBalanceGreaterThanOrEqual(account!.address, BigInt(9900000))
     const sui_objects = objects.filter(item => item.status === "Exists").map(item => item.details.data.fields.id.id)
     try {
       const resData = await signAndExecuteTransaction(
@@ -86,7 +89,9 @@ export default function Home() {
           }
         }
       )
-      console.log('success', resData);
+      if (resData.effects.status.status !== "success") {
+        console.log('failed', resData);
+      }
       setMintTx('https://explorer.sui.io/transaction/' + resData.certificate.transactionDigest)
     } catch (e) {
       console.error('failed', e);
@@ -104,7 +109,9 @@ export default function Home() {
           }
         }
       )
-      console.log('success', resData);
+      if (resData.effects.status.status !== "success") {
+        console.log('failed', resData);
+      }
       setStakeTx('https://explorer.sui.io/transaction/' + resData.certificate.transactionDigest)
       setUnstakedSelected([])
     } catch (e) {
@@ -123,7 +130,9 @@ export default function Home() {
           }
         }
       )
-      console.log('success', resData);
+      if (resData.effects.status.status !== "success") {
+        console.log('failed', resData);
+      }
       setClaimTx('https://explorer.sui.io/transaction/' + resData.certificate.transactionDigest)
       setStakedSelected([])
     } catch (e) {
@@ -143,7 +152,9 @@ export default function Home() {
           }
         }
       )
-      console.log('success', resData);
+      if (resData.effects.status.status !== "success") {
+        console.log('failed', resData);
+      }
       setClaimTx('https://explorer.sui.io/transaction/' + resData.certificate.transactionDigest)
       setStakedSelected([])
     } catch (e) {
@@ -210,7 +221,7 @@ export default function Home() {
         GLOBAL,
         EGG_TREASUTY,
         stakedSelected,
-        true
+        false
       ],
       gasBudget: 1000,
     };
@@ -218,7 +229,7 @@ export default function Home() {
 
   useEffect(() => {
     if (collectionSupply < PAID_TOKENS) {
-      setCost(`${(MINT_PRICE * mintAmount).toFixed(3)} SUI`)
+      setCost(`${(MINT_PRICE * mintAmount).toFixed(4)} SUI`)
     } else if (collectionSupply <= MAX_TOKEN * 2 / 5) {
       setCost(`${20 * mintAmount} EGG`)
     } else if (collectionSupply <= MAX_TOKEN * 4 / 5) {
@@ -237,16 +248,22 @@ export default function Home() {
       fetchData()
     }, 10000)
     return () => clearInterval(interval)
-  }, []);
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await getCollectionSupply();
+    }
+    fetchData()
+  }, [mintTx]);
 
   // get unstaked fox or chicken
   useEffect(() => {
     if (connected) {
       (async () => {
         const objects = await provider.getObjectsOwnedByAddress(account!.address)
-
         const foc = objects
-          .filter(item => item.type === DAPP_ADDRESS + "::token_helper::FoxOrChicken")
+          .filter(item => item.type === PACKAGE_ID + "::token_helper::FoxOrChicken")
           .map(item => item.objectId)
         const foces = await provider.getObjectBatch(foc)
         const unstaked = foces.filter(item => item.status === "Exists").map(item => {
@@ -337,7 +354,9 @@ export default function Home() {
   useEffect(() => {
     if (connected) {
       (async () => {
-        const balanceObjects = await provider.getCoinBalancesOwnedByAddress(account!.address, DAPP_ADDRESS + "egg::EGG")
+        // const balanceObjects = await sui_client.getBalance(account!.address, PACKAGE_ID + "::egg::EGG")
+        // console.log(balanceObjects)
+        const balanceObjects = await provider.getCoinBalancesOwnedByAddress(account!.address, PACKAGE_ID + "::egg::EGG")
         const balances = balanceObjects.filter(item => item.status === 'Exists').map(item => parseInt(item.details.data.fields.balance))
         const initialValue = 0;
         const sumWithInitial = balances.reduce(
@@ -487,10 +506,10 @@ export default function Home() {
                 </div>}
                 {stakedSelected.length > 0 && <div className="flex flex-row space-x-4">
                   <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
-                    <div className="text-center font-console pt-1" onClick={claim_egg}>Shear $WOOL</div>
+                    <div className="text-center font-console pt-1" onClick={claim_egg}>Collect $EGG</div>
                   </div>
                   <div className="relative flex items-center justify-center cursor-pointer false hover:bg-gray-200 active:bg-gray-400" style={{ userSelect: "none", width: "200px", borderImage: "url('./wood-frame.svg') 5 / 1 / 0 stretch", borderWidth: "10px" }}>
-                    <div className="text-center font-console pt-1" onClick={unstake_nft}>Shear $WOOL & Unstake</div>
+                    <div className="text-center font-console pt-1" onClick={unstake_nft}>Collect $WOOL & Unstake</div>
                   </div>
                 </div>}
               </div>
