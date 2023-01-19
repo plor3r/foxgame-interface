@@ -22,18 +22,16 @@ export default function Home() {
 
   const [cost, setCost] = useState('');
 
-  const [unstakedSheep, setUnstakedSheep] = useState<Array<number>>([]);
-  const [unstakedWolf, setUnstakedWolf] = useState<Array<number>>([]);
-
   const MAX_TOKEN = 100;
   const PAID_TOKENS = 20;
   const MINT_PRICE = 0.00099;
 
   const PACKAGE_ID = remove_leading_zero(DAPP_ADDRESS);
-  const GLOBAL = "0x6406b60d47fdfa5b3f890d148c674df05832e0af";
-  const EGG_TREASUTY = "0xaba8aabd3fe42577d310fde07a752a0a302bfc08";
+  const GLOBAL = "0xc78a6b7c88eeac6329f1790f1287e3a821cc94a5";
+  const EGG_TREASUTY = "0x5c069c65554e83d16750d3390ab489bf429769e3";
 
-  const [unstakedFoC, setUnstakedFoC] = useState<Array<{ objectId: string, index: number, url: string }>>([]);
+  const [unstakedFox, setUnstakedFox] = useState<Array<{ objectId: string, index: number, url: string, is_chicken: boolean }>>([]);
+  const [unstakedChicken, setUnstakedChicken] = useState<Array<{ objectId: string, index: number, url: string, is_chicken: boolean }>>([]);
   const [collectionSupply, setCollectionSupply] = useState(0);
   const [mintAmount, setMintAmount] = useState(1);
   const [eggBalance, setEggBalance] = useState(0);
@@ -301,12 +299,15 @@ export default function Home() {
             objectId: item.details.data.fields.id.id,
             index: parseInt(item.details.data.fields.index),
             url: item.details.data.fields.url,
+            is_chicken: item.details.data.fields.is_chicken,
           }
-        }).sort((n1,n2) => n1.index - n2.index)
-        setUnstakedFoC(unstaked)
+        }).sort((n1, n2) => n1.index - n2.index)
+        setUnstakedFox(unstaked.filter(item => !item.is_chicken))
+        setUnstakedChicken(unstaked.filter(item => item.is_chicken))
       })()
     } else {
-      setUnstakedFoC([])
+      setUnstakedFox([])
+      setUnstakedChicken([])
     }
   }, [connected, mintTx, stakeTx, claimTx])
 
@@ -357,7 +358,6 @@ export default function Home() {
       (async () => {
         try {
           const objects = await sui_client.getDynamicFieldObject(packStakedObject, account!.address);
-          console.log("pack objects", objects)
           if (objects != null) {
             const fox_staked = objects.details.data.fields.value
             const fox_stakes = await provider.getObjectBatch(fox_staked)
@@ -369,7 +369,6 @@ export default function Home() {
                 url: foc.fields.url,
               }
             })
-            console.log("pack staked", staked)
             setStakedFox(staked)
           }
         }
@@ -496,11 +495,11 @@ export default function Home() {
                 <div className="h-4"></div>
                 <div className="w-full" style={{ borderWidth: "0px 0px 4px 4px", borderTopStyle: "initial", borderRightStyle: "initial", borderBottomStyle: "solid", borderLeftStyle: "solid", borderTopColor: "initial", borderRightColor: "initial", borderBottomColor: "rgb(42, 35, 30)", borderLeftColor: "rgb(42, 35, 30)", borderImage: "initial", padding: "2px", opacity: "1" }}>
                   <div className="text-red font-console">CAN STAKE</div>
-                  {unstakedFoC.length == 0 && unstakedWolf.length == 0 ? <>
+                  {unstakedFox.length == 0 && unstakedChicken.length == 0 ? <>
                     <div className="text-red font-console text-xs">NO TOKENS</div>
                   </> : <div className="overflow-x-scroll">
-                    {unstakedFoC.map((item, i) => renderUnstaked(item, "sheep"))}
-                    {unstakedWolf.map((item, i) => renderUnstaked(item, "wolf"))}
+                    {unstakedFox.map((item, i) => renderUnstaked(item, "fox"))}
+                    {unstakedChicken.map((item, i) => renderUnstaked(item, "chicken"))}
                   </div>
                   }
                 </div>
@@ -512,7 +511,7 @@ export default function Home() {
                   {stakedChicken.length == 0 ? <>
                     <div className="text-red font-console text-xs">NO TOKENS</div>
                   </> : <div className="overflow-x-scroll">
-                    {stakedChicken.map((item, i) => renderStaked(item, "sheep"))}
+                    {stakedChicken.map((item, i) => renderStaked(item, "chicken"))}
                   </div>
                   }
                 </div>
@@ -522,7 +521,7 @@ export default function Home() {
                   {stakedFox.length == 0 ? <>
                     <div className="text-red font-console text-xs">NO TOKENS</div>
                   </> : <div className="overflow-x-scroll">
-                    {stakedFox.map((item, i) => renderStaked(item, "wolf"))}
+                    {stakedFox.map((item, i) => renderStaked(item, "fox"))}
                   </div>
                   }
                 </div>
