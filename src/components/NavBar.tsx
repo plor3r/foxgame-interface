@@ -12,7 +12,7 @@ export function NavBar() {
     <nav className="navbar py-4 px-4">
       <div className="flex-1 text-lg font-semibold">
         <Link href="/">
-          <div className="title cursor-pointer" style={{ fontSize: "24px" }}>Wolf Game</div>
+          <div className="title cursor-pointer" style={{ fontSize: "24px" }}>Fox Game</div>
         </Link>
         {NETWORK == "mainnet" ?
           <div className="cursor-pointer ml-2 text-red title-upper" style={{ fontSize: "14px" }}>Sui</div>
@@ -27,9 +27,9 @@ export function NavBar() {
           <li className="font-sans text-lg">
             <Link href="/whitepapers" target="_blank">Whitepapers</Link>
           </li>
-          <li className="font-sans text-lg">
+          {/* <li className="font-sans text-lg">
             <Link href="https://test.wolfgameaptos.xyz" target="_blank">Testnet</Link>
-          </li>
+          </li> */}
           <li className="font-sans text-lg">
             <Link href="https://github.com/AptosWolfGame" target="_blank">Source Code</Link>
           </li>
