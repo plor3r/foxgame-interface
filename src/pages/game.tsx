@@ -25,13 +25,13 @@ export default function Home() {
   const [unstakedSheep, setUnstakedSheep] = useState<Array<number>>([]);
   const [unstakedWolf, setUnstakedWolf] = useState<Array<number>>([]);
 
-  const MAX_TOKEN = 50;
-  const PAID_TOKENS = 10;
-  const MINT_PRICE = 0.0099;
+  const MAX_TOKEN = 100;
+  const PAID_TOKENS = 20;
+  const MINT_PRICE = 0.00099;
 
   const PACKAGE_ID = remove_leading_zero(DAPP_ADDRESS);
-  const GLOBAL = "0x2216ece9c14a8b16040a304fadf65a7033a38109";
-  const EGG_TREASUTY = "0x40c7d773e474fedc610f07ee82c8d2126e48d1cf";
+  const GLOBAL = "0x6406b60d47fdfa5b3f890d148c674df05832e0af";
+  const EGG_TREASUTY = "0xaba8aabd3fe42577d310fde07a752a0a302bfc08";
 
   const [unstakedFoC, setUnstakedFoC] = useState<Array<{ objectId: string, index: number, url: string }>>([]);
   const [collectionSupply, setCollectionSupply] = useState(0);
@@ -46,6 +46,11 @@ export default function Home() {
   const [stakedFox, setStakedFox] = useState<Array<{ objectId: string, index: number, url: string }>>([]);
   const [stakedSelected, setStakedSelected] = useState<Array<string>>([]);
 
+  const [suiCost, setSuiCost] = useState<bigint>(BigInt(0));
+  const [eggCost, setEggCost] = useState<bigint>(BigInt(0));
+
+  const [insufficientBalance, setInsufficientBalance] = useState(false);
+
   function check_if_connected() {
     if (!connected) {
       alert("Please connect wallet first")
@@ -57,14 +62,20 @@ export default function Home() {
   }
 
   async function mint_nft() {
-    check_if_connected()
-    const objects = await provider.selectCoinSetWithCombinedBalanceGreaterThanOrEqual(account!.address, BigInt(9900000))
-    const sui_objects = objects.filter(item => item.status === "Exists").map(item => item.details.data.fields.id.id)
+    let suiObjectIds = [] as Array<string>
+    let eggObiectIds = [] as Array<string>
+    if (collectionSupply < PAID_TOKENS) {
+      const suiObjects = await provider.selectCoinSetWithCombinedBalanceGreaterThanOrEqual(account!.address, suiCost)
+      suiObjectIds = suiObjects.filter(item => item.status === "Exists").map(item => item.details.data.fields.id.id)
+    } else {
+      const eggObjects = await provider.selectCoinSetWithCombinedBalanceGreaterThanOrEqual(account!.address, eggCost, `${PACKAGE_ID}::egg::EGG`)
+      eggObiectIds = eggObjects.filter(item => item.status === "Exists").map(item => item.details.data.fields.id.id)
+    }
     try {
       const resData = await signAndExecuteTransaction({
         transaction: {
           kind: 'moveCall',
-          data: mint(false, sui_objects),
+          data: mint(false, suiObjectIds, eggObiectIds),
         },
       });
       if (resData.effects.status.status !== "success") {
@@ -78,14 +89,22 @@ export default function Home() {
 
   async function mint_nft_stake() {
     check_if_connected()
-    const objects = await provider.selectCoinSetWithCombinedBalanceGreaterThanOrEqual(account!.address, BigInt(9900000))
-    const sui_objects = objects.filter(item => item.status === "Exists").map(item => item.details.data.fields.id.id)
+    let suiObjectIds = [] as Array<string>
+    let eggObiectIds = [] as Array<string>
+    if (collectionSupply < PAID_TOKENS) {
+      const suiObjects = await provider.selectCoinSetWithCombinedBalanceGreaterThanOrEqual(account!.address, suiCost)
+      suiObjectIds = suiObjects.filter(item => item.status === "Exists").map(item => item.details.data.fields.id.id)
+    } else {
+      const eggObjects = await provider.selectCoinSetWithCombinedBalanceGreaterThanOrEqual(account!.address, eggCost, `${PACKAGE_ID}::egg::EGG`)
+      eggObiectIds = eggObjects.filter(item => item.status === "Exists").map(item => item.details.data.fields.id.id)
+    }
+
     try {
       const resData = await signAndExecuteTransaction(
         {
           transaction: {
             kind: 'moveCall',
-            data: mint(true, sui_objects),
+            data: mint(true, suiObjectIds, eggObiectIds),
           }
         }
       )
@@ -156,7 +175,6 @@ export default function Home() {
         console.log('failed', resData);
       }
       setClaimTx('https://explorer.sui.io/transaction/' + resData.certificate.transactionDigest)
-      setStakedSelected([])
     } catch (e) {
       console.error('failed', e);
     }
@@ -168,14 +186,14 @@ export default function Home() {
     setCollectionSupply(parseInt(focRegistry.fields.foc_born))
   }
 
-  function mint(stake: boolean, sui_objects: Array<string>) {
+  function mint(stake: boolean, sui_objects: Array<string>, egg_objects: Array<string>) {
     return {
       packageObjectId: PACKAGE_ID,
       module: 'fox',
       function: 'mint',
       typeArguments: [],
       arguments: [
-        GLOBAL, mintAmount.toString(), stake, sui_objects
+        GLOBAL, EGG_TREASUTY, mintAmount.toString(), stake, sui_objects, egg_objects
       ],
       gasBudget: 30000,
     };
@@ -191,7 +209,7 @@ export default function Home() {
         GLOBAL,
         unstakedSelected
       ],
-      gasBudget: 1000,
+      gasBudget: 30000,
     };
   }
 
@@ -207,7 +225,7 @@ export default function Home() {
         stakedSelected,
         true
       ],
-      gasBudget: 1000,
+      gasBudget: 30000,
     };
   }
 
@@ -223,18 +241,30 @@ export default function Home() {
         stakedSelected,
         false
       ],
-      gasBudget: 1000,
+      gasBudget: 30000,
     };
+  }
+
+  function octas() {
+    return 1000000000
   }
 
   useEffect(() => {
     if (collectionSupply < PAID_TOKENS) {
-      setCost(`${(MINT_PRICE * mintAmount).toFixed(4)} SUI`)
+      setSuiCost(BigInt(MINT_PRICE * mintAmount * octas()))
+      setEggCost(BigInt(0))
+      setCost(`${(MINT_PRICE * mintAmount).toFixed(5)} SUI`)
     } else if (collectionSupply <= MAX_TOKEN * 2 / 5) {
+      setSuiCost(BigInt(0))
+      setEggCost(BigInt(20 * mintAmount * octas()))
       setCost(`${20 * mintAmount} EGG`)
     } else if (collectionSupply <= MAX_TOKEN * 4 / 5) {
+      setSuiCost(BigInt(0))
+      setEggCost(BigInt(20 * mintAmount * octas()))
       setCost(`${40 * mintAmount} EGG`)
     } else {
+      setSuiCost(BigInt(0))
+      setEggCost(BigInt(20 * mintAmount * octas()))
       setCost(`${80 * mintAmount} EGG`)
     }
   }, [collectionSupply, mintAmount]);
@@ -263,7 +293,7 @@ export default function Home() {
       (async () => {
         const objects = await provider.getObjectsOwnedByAddress(account!.address)
         const foc = objects
-          .filter(item => item.type === PACKAGE_ID + "::token_helper::FoxOrChicken")
+          .filter(item => item.type === `${PACKAGE_ID}::token_helper::FoxOrChicken`)
           .map(item => item.objectId)
         const foces = await provider.getObjectBatch(foc)
         const unstaked = foces.filter(item => item.status === "Exists").map(item => {
@@ -272,7 +302,7 @@ export default function Home() {
             index: parseInt(item.details.data.fields.index),
             url: item.details.data.fields.url,
           }
-        })
+        }).sort((n1,n2) => n1.index - n2.index)
         setUnstakedFoC(unstaked)
       })()
     } else {
@@ -354,9 +384,9 @@ export default function Home() {
   useEffect(() => {
     if (connected) {
       (async () => {
-        // const balanceObjects = await sui_client.getBalance(account!.address, PACKAGE_ID + "::egg::EGG")
+        // const balanceObjects = await sui_client.getBalance(account!.address, `${PACKAGE_ID}::egg::EGG`)
         // console.log(balanceObjects)
-        const balanceObjects = await provider.getCoinBalancesOwnedByAddress(account!.address, PACKAGE_ID + "::egg::EGG")
+        const balanceObjects = await provider.getCoinBalancesOwnedByAddress(account!.address, `${PACKAGE_ID}::egg::EGG`)
         const balances = balanceObjects.filter(item => item.status === 'Exists').map(item => parseInt(item.details.data.fields.balance))
         const initialValue = 0;
         const sumWithInitial = balances.reduce(
@@ -410,7 +440,7 @@ export default function Home() {
 
   return (
     <div style={{ paddingTop: '1px' }}>
-      <div className="text-center"><span className="mb-5 text-center title">Wolf Game</span>
+      <div className="text-center"><span className="mb-5 text-center title">Fox Game</span>
         {NETWORK == "mainnet" ? <span className="cursor-pointer ml-2 text-red title-upper" style={{ fontSize: "18px", verticalAlign: "100%" }}>Sui</span>
           : <span className="cursor-pointer ml-2 text-red title-upper" style={{ fontSize: "18px", verticalAlign: "100%" }}>Sui {NETWORK}</span>}
       </div>
@@ -488,7 +518,7 @@ export default function Home() {
                 </div>
                 <div className="h-2"></div>
                 <div className="w-full" style={{ borderWidth: "0px 0px 4px 4px", borderTopStyle: "initial", borderRightStyle: "initial", borderBottomStyle: "solid", borderLeftStyle: "solid", borderTopColor: "initial", borderRightColor: "initial", borderBottomColor: "rgb(42, 35, 30)", borderLeftColor: "rgb(42, 35, 30)", borderImage: "initial", padding: "2px", opacity: "1" }}>
-                  <div className="text-red font-console">WOLFPACK</div>
+                  <div className="text-red font-console">FOX PACK</div>
                   {stakedFox.length == 0 ? <>
                     <div className="text-red font-console text-xs">NO TOKENS</div>
                   </> : <div className="overflow-x-scroll">
