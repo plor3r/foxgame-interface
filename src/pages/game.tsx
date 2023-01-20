@@ -13,7 +13,7 @@ import { JRProvider } from "../utils/sui_client";
 
 export default function Home() {
 
-  const { signAndExecuteTransaction, connected, account } = useWallet();
+  const { signAndExecuteTransaction, connected, account, status } = useWallet();
   const provider = new JsonRpcProvider();
   const sui_client = new JRProvider();
   const [mintTx, setMintTx] = useState('');
@@ -325,11 +325,9 @@ export default function Home() {
 
   // get bark.staked object
   useEffect(() => {
-    if (barnStakedObject !== '' && account) {
+    if (barnStakedObject !== '' && account !== null) {
       (async () => {
         try {
-          // const object = await provider.getObject(barnStakedObject)
-          // console.log("object", object)
           const dfObject = await sui_client.getDynamicFieldObject(barnStakedObject, account!.address);
           if (dfObject != null) {
             const chicken_staked = dfObject.details.data.fields.value
@@ -355,7 +353,7 @@ export default function Home() {
 
   // get pack.staked object
   useEffect(() => {
-    if (packStakedObject !== '' && account) {
+    if (packStakedObject !== '' && account !== null) {
       (async () => {
         try {
           const objects = await sui_client.getDynamicFieldObject(packStakedObject, account!.address);
@@ -379,7 +377,7 @@ export default function Home() {
         }
       })()
     }
-  }, [packStakedObject, mintTx, stakeTx, claimTx])
+  }, [connected, packStakedObject, mintTx, stakeTx, claimTx])
 
   // get egg balance
   useEffect(() => {
