@@ -27,8 +27,8 @@ export default function Home() {
   const MINT_PRICE = 0.00099;
 
   const PACKAGE_ID = remove_leading_zero(DAPP_ADDRESS);
-  const GLOBAL = "0xc78a6b7c88eeac6329f1790f1287e3a821cc94a5";
-  const EGG_TREASUTY = "0x5c069c65554e83d16750d3390ab489bf429769e3";
+  const GLOBAL = "0x795d872c8f28c58c2bdbc81113fda80003024313";
+  const EGG_TREASUTY = "0x89137a631573d61da2930b3c359396c74dc00981";
 
   const [unstakedFox, setUnstakedFox] = useState<Array<{ objectId: string, index: number, url: string, is_chicken: boolean }>>([]);
   const [unstakedChicken, setUnstakedChicken] = useState<Array<{ objectId: string, index: number, url: string, is_chicken: boolean }>>([]);
@@ -193,7 +193,7 @@ export default function Home() {
       arguments: [
         GLOBAL, EGG_TREASUTY, mintAmount.toString(), stake, sui_objects, egg_objects
       ],
-      gasBudget: 30000,
+      gasBudget: 1000000,
     };
   }
 
@@ -346,11 +346,12 @@ export default function Home() {
           }
         }
         catch (e) {
+          setStakedChicken([])
           console.log(e)
         }
       })()
     }
-  }, [barnStakedObject, mintTx, stakeTx, claimTx])
+  }, [connected, barnStakedObject, mintTx, stakeTx, claimTx])
 
   // get pack.staked object
   useEffect(() => {
@@ -373,6 +374,7 @@ export default function Home() {
           }
         }
         catch (e) {
+          setStakedFox([])
           console.log(e)
         }
       })()
