@@ -64,10 +64,10 @@ export default function Home() {
     let eggObiectIds = [] as Array<string>
     if (collectionSupply < PAID_TOKENS) {
       const suiObjects = await provider.selectCoinSetWithCombinedBalanceGreaterThanOrEqual(account!.address, suiCost)
-      suiObjectIds = suiObjects.filter(item => item.status === "Exists").map(item => item.details.data.fields.id.id)
+      suiObjectIds = suiObjects.filter(item => item.status === "Exists").map((item: any) => item.details.data.fields.id.id)
     } else {
       const eggObjects = await provider.selectCoinSetWithCombinedBalanceGreaterThanOrEqual(account!.address, eggCost, `${PACKAGE_ID}::egg::EGG`)
-      eggObiectIds = eggObjects.filter(item => item.status === "Exists").map(item => item.details.data.fields.id.id)
+      eggObiectIds = eggObjects.filter(item => item.status === "Exists").map((item: any) => item.details.data.fields.id.id)
     }
     try {
       const resData = await signAndExecuteTransaction({
@@ -91,10 +91,10 @@ export default function Home() {
     let eggObiectIds = [] as Array<string>
     if (collectionSupply < PAID_TOKENS) {
       const suiObjects = await provider.selectCoinSetWithCombinedBalanceGreaterThanOrEqual(account!.address, suiCost)
-      suiObjectIds = suiObjects.filter(item => item.status === "Exists").map(item => item.details.data.fields.id.id)
+      suiObjectIds = suiObjects.filter(item => item.status === "Exists").map((item: any) => item.details.data.fields.id.id)
     } else {
       const eggObjects = await provider.selectCoinSetWithCombinedBalanceGreaterThanOrEqual(account!.address, eggCost, `${PACKAGE_ID}::egg::EGG`)
-      eggObiectIds = eggObjects.filter(item => item.status === "Exists").map(item => item.details.data.fields.id.id)
+      eggObiectIds = eggObjects.filter(item => item.status === "Exists").map((item: any) => item.details.data.fields.id.id)
     }
 
     try {
@@ -179,7 +179,7 @@ export default function Home() {
   }
 
   async function getCollectionSupply() {
-    const globalObject = await provider.getObject(GLOBAL)
+    const globalObject: any = await provider.getObject(GLOBAL)
     const focRegistry = globalObject.details.data.fields.foc_registry
     setCollectionSupply(parseInt(focRegistry.fields.foc_born))
   }
@@ -294,7 +294,7 @@ export default function Home() {
           .filter(item => item.type === `${PACKAGE_ID}::token_helper::FoxOrChicken`)
           .map(item => item.objectId)
         const foces = await provider.getObjectBatch(foc)
-        const unstaked = foces.filter(item => item.status === "Exists").map(item => {
+        const unstaked = foces.filter(item => item.status === "Exists").map((item: any) => {
           return {
             objectId: item.details.data.fields.id.id,
             index: parseInt(item.details.data.fields.index),
@@ -314,7 +314,7 @@ export default function Home() {
   // get globla object
   useEffect(() => {
     (async () => {
-      const globalObject = await provider.getObject(GLOBAL)
+      const globalObject: any = await provider.getObject(GLOBAL)
       const barn_staked = globalObject.details.data.fields.barn.fields.id.id
       setBarnStakedObject(barn_staked)
 
@@ -328,11 +328,11 @@ export default function Home() {
     if (barnStakedObject !== '' && account !== null) {
       (async () => {
         try {
-          const dfObject = await sui_client.getDynamicFieldObject(barnStakedObject, account!.address);
+          const dfObject: any = await sui_client.getDynamicFieldObject(barnStakedObject, account!.address);
           if (dfObject != null) {
             const chicken_staked = dfObject.details.data.fields.value
             const chicken_stakes = await provider.getObjectBatch(chicken_staked)
-            const staked = chicken_stakes.filter(item => item.status === "Exists").map(item => {
+            const staked = chicken_stakes.filter(item => item.status === "Exists").map((item: any) => {
               let foc = item.details.data.fields.item
               return {
                 objectId: foc.fields.id.id,
@@ -356,11 +356,11 @@ export default function Home() {
     if (packStakedObject !== '' && account !== null) {
       (async () => {
         try {
-          const objects = await sui_client.getDynamicFieldObject(packStakedObject, account!.address);
+          const objects: any = await sui_client.getDynamicFieldObject(packStakedObject, account!.address);
           if (objects != null) {
             const fox_staked = objects.details.data.fields.value
             const fox_stakes = await provider.getObjectBatch(fox_staked)
-            const staked = fox_stakes.filter(item => item.status === "Exists").map(item => {
+            const staked = fox_stakes.filter(item => item.status === "Exists").map((item: any) => {
               let foc = item.details.data.fields.item
               return {
                 objectId: foc.fields.id.id,
@@ -386,7 +386,7 @@ export default function Home() {
         // const balanceObjects = await sui_client.getBalance(account!.address, `${PACKAGE_ID}::egg::EGG`)
         // console.log(balanceObjects)
         const balanceObjects = await provider.getCoinBalancesOwnedByAddress(account!.address, `${PACKAGE_ID}::egg::EGG`)
-        const balances = balanceObjects.filter(item => item.status === 'Exists').map(item => parseInt(item.details.data.fields.balance))
+        const balances = balanceObjects.filter(item => item.status === 'Exists').map((item: any) => parseInt(item.details.data.fields.balance))
         const initialValue = 0;
         const sumWithInitial = balances.reduce(
           (accumulator, currentValue) => accumulator + currentValue,
