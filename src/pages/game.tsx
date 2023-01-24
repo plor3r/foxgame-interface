@@ -22,13 +22,13 @@ export default function Home() {
 
   const [cost, setCost] = useState('');
 
-  const MAX_TOKEN = 100;
-  const PAID_TOKENS = 20;
-  const MINT_PRICE = 0.00099;
+  const MAX_TOKEN = 500;
+  const PAID_TOKENS = 100;
+  const MINT_PRICE = 0.0099;
 
   const PACKAGE_ID = remove_leading_zero(DAPP_ADDRESS);
-  const GLOBAL = "0x795d872c8f28c58c2bdbc81113fda80003024313";
-  const EGG_TREASUTY = "0x89137a631573d61da2930b3c359396c74dc00981";
+  const GLOBAL = "0x51b8031173e1391e3a116c86c57b03d84daccb26";
+  const EGG_TREASUTY = "0x7c40c2bf969d96482979e3d6f2e90f779f583e2f";
 
   const [unstakedFox, setUnstakedFox] = useState<Array<{ objectId: string, index: number, url: string, is_chicken: boolean }>>([]);
   const [unstakedChicken, setUnstakedChicken] = useState<Array<{ objectId: string, index: number, url: string, is_chicken: boolean }>>([]);
