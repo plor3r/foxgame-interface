@@ -27,8 +27,8 @@ export default function Home() {
   const MINT_PRICE = 0.0099;
 
   const PACKAGE_ID = remove_leading_zero(DAPP_ADDRESS);
-  const GLOBAL = "0x87e17a928ca193e829ed9e4cb508afa3804047d1";
-  const EGG_TREASUTY = "0x43efd37b32ffbbc8e374c9ff46a520b5c5e1b64e";
+  const GLOBAL = "0xe4ffefc480e20129ff7893d7fd550b17fda0ab0f";
+  const EGG_TREASUTY = "0x17db4feb4652b8b5ce9ebf6dc7d29463b08e234e";
 
   const [unstakedFox, setUnstakedFox] = useState<Array<{ objectId: string, index: number, url: string, is_chicken: boolean }>>([]);
   const [unstakedChicken, setUnstakedChicken] = useState<Array<{ objectId: string, index: number, url: string, is_chicken: boolean }>>([]);
