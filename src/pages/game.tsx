@@ -13,8 +13,9 @@ import { JRProvider } from "../utils/sui_client";
 
 export default function Home() {
 
-  const { signAndExecuteTransaction, connected, account, status } = useWallet();
-  const provider = new JsonRpcProvider();
+  const { signAndExecuteTransaction, connected, account } = useWallet();
+  const rcpUrl = NETWORK === 'testnet' ? "https://fullnode.testnet.sui.io:443" : "https://fullnode.devnet.sui.io:443";
+  const provider = new JsonRpcProvider(rcpUrl);
   const sui_client = new JRProvider();
   const [mintTx, setMintTx] = useState('');
   const [stakeTx, setStakeTx] = useState('');
@@ -27,8 +28,8 @@ export default function Home() {
   const MINT_PRICE = 0.0099;
 
   const PACKAGE_ID = remove_leading_zero(DAPP_ADDRESS);
-  const GLOBAL = "0x1652fe0bc58dae6133156662c0680530640075ca";
-  const EGG_TREASUTY = "0x98212ac2c0facee8f61fc6fdc9407a032deafa6f";
+  const GLOBAL = "0xc2461548818b1db84824dffffb8daebfb984e612";
+  const EGG_TREASUTY = "0x8d6f845560bf6b47a9714d6fb095f373b30711d0";
 
   const [unstakedFox, setUnstakedFox] = useState<Array<{ objectId: string, index: number, url: string, is_chicken: boolean }>>([]);
   const [unstakedChicken, setUnstakedChicken] = useState<Array<{ objectId: string, index: number, url: string, is_chicken: boolean }>>([]);

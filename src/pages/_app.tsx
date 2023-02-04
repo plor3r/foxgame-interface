@@ -10,7 +10,15 @@ import {
   SuiWallet,
   EthosWallet,
   MartianWallet,
+  SuiDevnetChain,
+  SuiTestnetChain,
+  Chain,
 } from '@suiet/wallet-kit';
+
+const SupportedChains: Chain[] = [
+  SuiDevnetChain,
+  SuiTestnetChain,
+]
 
 function WalletSelector({ Component, pageProps }: AppProps) {
 
@@ -20,7 +28,7 @@ function WalletSelector({ Component, pageProps }: AppProps) {
       SuiWallet,
       MartianWallet,
       EthosWallet,
-    ]}>
+    ]} chains={SupportedChains}>
       <div className="px-8 rootimage min-h-screen">
         <NavBar />
         <Component {...pageProps} className="bg-base-300" />
